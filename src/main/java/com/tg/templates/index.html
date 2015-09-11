@@ -1,0 +1,61 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Good Thymes Virtual Grocery</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ <link rel="stylesheet" type="text/css" href="templates/css/style.css" /> 
+  <style type="text/css">
+  #container {
+    max-width: 1200px;
+    height: 800px;
+    margin: auto;
+  }
+</style> 
+</head>
+
+<body>
+<script src="templates/js/sigma.min.js"></script>
+<script src="templates/js/sigma.parsers.json.min.js"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+
+/*[+
+
+var d = [[${context.get('nodes')}]];
+var Gsetting = [[${context.get('graph_settings')}]];
+var color = [[${context.get('color')}]];
+var ls = [[${context.get('ls')}]];
++]*/
+
+//console.log(d);
+
+/*]]>*/
+</script>
+<form method = "get" action="/graph" ENCTYPE="application/x-www-form-urlencoded" name="wibble">
+<input type="text" name="searchField"/>
+<input type="submit"/>
+</form>
+<div id="container"></div>
+
+<b>it grocery store</b>
+<p th:text="${context.get('welcome')}">Welcome to our grocery store!</p>
+<script>
+document.body.style.backgroundColor = color;
+console.log(ls);
+var json1 =d;//{  "nodes": [    d,    {      "id": "n1",      "label": "B node",      "x": 3,      "y": 1,      "size": 2    },    {      "id": "n2",      "label": "C node",      "x": 1,      "y": 3,      "size": 1    }  ],  "edges": [    {      "id": "e0",      "source": "n0",      "target": "n1"           },    {      "id": "e1",      "source": "n1",      "target": "n2"         },    {      "id": "e2",      "source": "n2",      "target": "n0"           }  ]};
+	//s = new sigma.parsers.json('data.json', {
+	s = new sigma( {
+    //container: 'graph-container',
+graph : json1,
+	renderer: {
+container: document.getElementById('container'),
+type: 'canvas'
+},
+    settings:Gsetting
+  });
+  //console.log(json1);
+</script>
+
+</body>
+
+</html>
