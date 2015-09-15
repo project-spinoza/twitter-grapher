@@ -6,18 +6,17 @@ import java.util.Map;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.preview.types.EdgeColor;
 
-import uk.ac.ox.oii.sigmaexporter.model.GraphEdge;
 import uk.ac.ox.oii.sigmaexporter.model.GraphElement;
 import uk.ac.ox.oii.sigmaexporter.model.GraphNode;
 
-public class SigmaGraph implements Graph {
+public class SigmaGraph implements TwitterGraph {
 	
 	private HashSet<GraphElement> sigmaNodes;
 	private HashSet<GraphElement> sigmaEdges;
@@ -28,10 +27,10 @@ public class SigmaGraph implements Graph {
 	}
 	
 	@Override
-	public void build(DirectedGraph graph, Map<String, Object> settings) {
+	public void build(Graph graph, Map<String, Object> settings) {
 		// TODO Auto-generated method stub
-		buildNodes(graph, settings);
-		buildEdges(graph, settings);
+		createNodes(graph, settings);
+		createEdges(graph, settings);
 	}
 	
 	public HashSet<GraphElement> getNodes() {
@@ -58,9 +57,9 @@ public class SigmaGraph implements Graph {
 		return "nodes["+nodeCount()+"], edges["+edgeCount()+"]";
 	}
 	
-	private void buildNodes(DirectedGraph graph, Map<String, Object> settings){
+	private void createNodes(Graph graph, Map<String, Object> settings){
 		String nodeSizeBy = settings.get("nsb").toString();
-		Node[] nodeArray = graph.getNodes().toArray();
+		Node[] nodeArray =  graph.getNodes().toArray();
 		for (int i = 0; i < nodeArray.length; i++) {
 
 			Node n = nodeArray[i];
@@ -115,10 +114,11 @@ public class SigmaGraph implements Graph {
 		}
 	}
 	
-	private void buildEdges(DirectedGraph graph, Map<String, Object> settings){
+	private void createEdges(Graph graph, Map<String, Object> settings){
 		
 		EdgeColor colorMixer = new EdgeColor(EdgeColor.Mode.MIXED);
-		Edge[] edgeArray = graph.getEdges().toArray();
+		Edge[] edgeArray =  graph.getEdges().toArray();
+		
 		for (int i = 0; i < edgeArray.length; i++) {
 			Edge e = edgeArray[i];
 			String sourceId = e.getSource().getNodeData().getId();

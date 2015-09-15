@@ -10,7 +10,7 @@ import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.graph.DegreeRangeBuilder.DegreeRangeFilter;
-import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
@@ -37,7 +37,7 @@ import org.openide.util.Lookup;
 
 public class Builder {
 	
-	public static DirectedGraph build(){
+	public static Graph build(boolean IS_DIRECTED){
 	 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
      pc.newProject();
      Workspace workspace = pc.getCurrentWorkspace();
@@ -66,7 +66,8 @@ public class Builder {
      importController.process(container, new DefaultProcessor(), workspace);
 
      //See if graph is well imported
-     DirectedGraph graph = graphModel.getDirectedGraph();
+     //DirectedGraph graph = graphModel.getDirectedGraph();
+     Graph graph = IS_DIRECTED ? graphModel.getDirectedGraph() : graphModel.getUndirectedGraph(); 
      System.out.println("Nodes: " + graph.getNodeCount());
      System.out.println("Edges: " + graph.getEdgeCount());
 

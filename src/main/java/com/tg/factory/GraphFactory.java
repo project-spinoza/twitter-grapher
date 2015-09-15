@@ -1,32 +1,32 @@
 package com.tg.factory;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 
 import com.tg.factory.util.Builder;
-import com.tg.graph.Graph;
+import com.tg.graph.TwitterGraph;
 import com.tg.graph.SigmaGraph;
 
 public class GraphFactory {
 	
-	public Graph getGraph(String graphType, Map<String, Object> settings){
+	public TwitterGraph getGraph(String graphType, Map<String, Object> settings){
 		
-		DirectedGraph rawGraph = Builder.build();
+		Graph gephiGraph = Builder.build(true);
 		
-		Graph sigmaGraph;
+		TwitterGraph graph;
 		
 		switch(graphType){
 		
 		case "sigmaGraph" :
-				sigmaGraph = new SigmaGraph();
-				sigmaGraph.build(rawGraph, settings);
+				graph = new SigmaGraph();
+				graph.build(gephiGraph, settings);
 			break;
+			
 			default:
-				sigmaGraph = null;
+				graph = null;
 		}
 		
-		return sigmaGraph;
+		return graph;
 	}
 }

@@ -12,7 +12,7 @@ import io.vertx.ext.web.templ.ThymeleafTemplateEngine;
 import java.util.Map;
 
 import com.tg.factory.GraphFactory;
-import com.tg.graph.Graph;
+import com.tg.graph.TwitterGraph;
 
 public class GraphServer extends AbstractVerticle {
 	@Override
@@ -69,7 +69,7 @@ public class GraphServer extends AbstractVerticle {
 		     //. generating graph...
 		     String type = "sigmaGraph";
 	    	 GraphFactory graphFactory = new GraphFactory();
-	    	 Graph graph = graphFactory.getGraph(type, ls);
+	    	 TwitterGraph graph = graphFactory.getGraph(type, ls);
 	    	 ctx.put("nodes", graph);
 		     
 		     // and now delegate to the engine to render it.
