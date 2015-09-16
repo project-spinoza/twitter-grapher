@@ -23,7 +23,6 @@ import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.types.EdgeColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.ranking.api.Ranking;
@@ -35,6 +34,8 @@ import org.gephi.statistics.plugin.GraphDistance;
 import org.openide.util.Lookup;
 
 import com.tg.importers.TwitterImportController;
+
+import de.uni_leipzig.informatik.asv.gephi.chinesewhispers.ChineseWhispersClusterer;
 
 public class Builder {
 	
@@ -86,7 +87,11 @@ public class Builder {
     /* UndirectedGraph graphVisible = graphModel.getUndirectedGraphVisible();
      System.out.println("Nodes: " + graphVisible.getNodeCount());
      System.out.println("Edges: " + graphVisible.getEdgeCount());*/
-
+     
+     //. cluster coloring...
+     ChineseWhispersClusterer cwc = new ChineseWhispersClusterer();
+     cwc.execute(graphModel);
+     
      //Run YifanHuLayout for 100 passes - The layout always takes the current visible view
      YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
      layout.setGraphModel(graphModel);
@@ -114,16 +119,18 @@ public class Builder {
      AttributeColumn centralityColumn = attributeModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
      Ranking centralityRanking = rankingController.getModel().getRanking(Ranking.NODE_ELEMENT, centralityColumn.getId());
      AbstractSizeTransformer sizeTransformer = (AbstractSizeTransformer) rankingController.getModel().getTransformer(Ranking.NODE_ELEMENT, Transformer.RENDERABLE_SIZE);
-     sizeTransformer.setMinSize(3);
+     sizeTransformer.setMinSize(1);
      sizeTransformer.setMaxSize(10);
      rankingController.transform(centralityRanking,sizeTransformer);
 
      //Preview
      model.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-     model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.GRAY));
+     //model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.GRAY));
      model.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
      model.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT, model.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(8));
-
+     
+     
+     
      //Export
      /*ExportController ec = Lookup.getDefault().lookup(ExportController.class);
      try {

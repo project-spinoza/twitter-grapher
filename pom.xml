@@ -71,6 +71,13 @@
 			<version>1.0</version>
 		</dependency>
 		
+		<!-- Chinese Whispers Clustering clustering algorithm -->
+		<dependency>
+			<groupId>gephi-cw</groupId>
+			<artifactId>gephi-cw</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		
 		<!-- SigmaExporter dependency -->
 		<dependency>
 			<groupId>uk-ac-ox-oii-sigmaexporter</groupId>
