@@ -14,7 +14,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.ImportController;
@@ -35,6 +34,8 @@ import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
 import org.gephi.statistics.plugin.GraphDistance;
 import org.openide.util.Lookup;
 
+import com.tg.importers.TwitterImportController;
+
 public class Builder {
 	
 	public static Graph build(boolean IS_DIRECTED){
@@ -46,7 +47,8 @@ public class Builder {
      AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
      GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
      PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
-     ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+     //ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+     ImportController importController = TwitterImportController.getInstance();
      FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
      RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
 
@@ -54,7 +56,8 @@ public class Builder {
      Container container;
      try {
          //File file = new File(getClass().getResource("/org/gephi/toolkit/demos/resources/polblogs.gml").toURI());
-         File file = new File("polblogs.gml");
+         //File file = new File("polblogs.gml");
+         File file = new File("tweetfile.tweet");
          container = importController.importFile(file);
          container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED);   //Force DIRECTED
      } catch (Exception ex) {
@@ -80,9 +83,9 @@ public class Builder {
      graphModel.setVisibleView(view);    //Set the filter result as the visible view
 
      //See visible graph stats
-     UndirectedGraph graphVisible = graphModel.getUndirectedGraphVisible();
+    /* UndirectedGraph graphVisible = graphModel.getUndirectedGraphVisible();
      System.out.println("Nodes: " + graphVisible.getNodeCount());
-     System.out.println("Edges: " + graphVisible.getEdgeCount());
+     System.out.println("Edges: " + graphVisible.getEdgeCount());*/
 
      //Run YifanHuLayout for 100 passes - The layout always takes the current visible view
      YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
