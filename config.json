@@ -5,7 +5,6 @@
         "port": 8080
     },
     "layout_settings": {
-        "sv": "hyundai",
         "limit": 5000,
         "ES_SERVER_IP": "52.4.65.24",
         "sentiment": "null",

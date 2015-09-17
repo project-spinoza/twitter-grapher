@@ -17,6 +17,7 @@ public class TwitterImportController extends ImportControllerImpl {
 		super();
 	}
 	
+	@Override
     public Container importFile(File file) throws FileNotFoundException {
         FileObject fileObject = FileUtil.toFileObject(file);
         if (fileObject != null) {

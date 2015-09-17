@@ -39,8 +39,8 @@ public class GraphServer extends AbstractVerticle {
 	    	 Map<String, Object> as = aso.getMap();
 	    	 JsonObject gso = (JsonObject) settings.get("graph_settings");
 	    	 Map<String, Object> gs = gso.getMap();
-	    	  String getdata = as.get("getdata").toString();
-	    	  System.out.println("value of getdata is: "+getdata);
+	    
+	    	  
 	    	 /*if(getdata.equals("file")){
 	    		  path = as.get("input_file").toString();
 	    	 }*/
@@ -60,8 +60,9 @@ public class GraphServer extends AbstractVerticle {
 		     });
 		     
 		     mainrouter.get("/graph").method(HttpMethod.GET).handler(ctx -> {
-		    	 
-		     ls.put("sv", getSearchValue(ctx.request().absoluteURI()));
+		     
+		     TwitterGrapher.search_value = getSearchValue(ctx.request().absoluteURI());
+		     System.out.println(TwitterGrapher.search_value);
 		     ctx.put("color",bk_color );	 
 		     ctx.put("welcome", "Hi there!");
 		     ctx.put("graph_settings", gs);
@@ -92,9 +93,11 @@ public class GraphServer extends AbstractVerticle {
 	private String getSearchValue(String url)
 	{
 		String [] sv = url.split("=");
-		if(sv.length == 2)
-		return sv[1];
-		else
-			return "hyundai";
+		
+		if(sv.length == 2){
+			return sv[1].replaceAll("\\+", " ");
+		}else{
+			return null;
+		}
 	}
 }

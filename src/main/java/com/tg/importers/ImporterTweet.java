@@ -20,6 +20,8 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 
+import com.tg.TwitterGrapher;
+
 public class ImporterTweet implements FileImporter, LongTask {
 
 	private Reader reader;
@@ -27,6 +29,7 @@ public class ImporterTweet implements FileImporter, LongTask {
     private Report report;
     private ProgressTicket progressTicket;	
     private boolean cancel = false;
+   
     
     @Override
 	public boolean execute(ContainerLoader container) {
@@ -114,13 +117,34 @@ public class ImporterTweet implements FileImporter, LongTask {
 	}
 	private ArrayList<String> getTweetsList(LineNumberReader reader) throws IOException {
 		ArrayList<String> tweets = new ArrayList<String>();
-		
+		String sv = TwitterGrapher.search_value;
 		while( reader.ready() ){
 			String line = reader.readLine();
-            if (line != null && !line.isEmpty()) {
-            	tweets.add(line);
+			if (line == null || line.isEmpty()) {
+            	continue;
             }
 			
+			line = line.toLowerCase();
+			
+			if(sv != null){
+				sv = sv.toLowerCase();
+				String[] svp = sv.split(" ");
+				if(svp.length > 1 ){
+					boolean sv_found = false;
+					for(String sp : svp){
+						if(line.contains(sp)){
+							sv_found = true;
+						}
+					}
+					line = sv_found ? line : null; 
+				}else{
+					line = line.contains(sv) ? line : null;
+				}
+			}
+            
+			if(line != null){
+				tweets.add(line);
+			}
 		}
 		
 		return tweets;
@@ -207,5 +231,5 @@ public class ImporterTweet implements FileImporter, LongTask {
 		// TODO Auto-generated method stub
 		this.reader = reader;
 	}
-
+	
 }

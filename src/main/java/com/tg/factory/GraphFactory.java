@@ -11,8 +11,8 @@ import com.tg.graph.SigmaGraph;
 public class GraphFactory {
 	
 	public TwitterGraph getGraph(String graphType, Map<String, Object> settings){
-		
-		Graph gephiGraph = Builder.build(true);
+		boolean DIRECTED = true;
+		Graph gephiGraph = Builder.build(DIRECTED, settings);
 		
 		TwitterGraph graph;
 		

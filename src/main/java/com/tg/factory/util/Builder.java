@@ -2,6 +2,7 @@ package com.tg.factory.util;
 
 import java.awt.Color;
 import java.io.File;
+import java.util.Map;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
@@ -39,7 +40,7 @@ import de.uni_leipzig.informatik.asv.gephi.chinesewhispers.ChineseWhispersCluste
 
 public class Builder {
 	
-	public static Graph build(boolean IS_DIRECTED){
+	public static Graph build(boolean IS_DIRECTED, Map<String, Object> settings){
 	 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
      pc.newProject();
      Workspace workspace = pc.getCurrentWorkspace();
