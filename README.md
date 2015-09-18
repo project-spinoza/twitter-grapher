@@ -1,4 +1,4 @@
-# twitter-grapher
+# Twitter Grapher
 Twitter Grapher is an open source project for visualizing large data from multiple sources...<br/>
 
 # Installation
@@ -9,6 +9,9 @@ Twitter Grapher is an open source project for visualizing large data from multip
 
 # Adding dependencies
 <p>twitter-grapher have some dependencies, so before building the application you've to add them first.</p>
+#### NOTE:
+<p>Preferred Location:
+Please clone the Project to directory whose path doesn't contain blank spaces.</p>
 1. clone the twitter-grapher repository on your machine.<br/>
    `git clone https://github.com/project-spinoza/twitter-grapher.git`<br/>
 2. <p>To add dependencies run the following commands from the root directory of twitter-grapher</p>
@@ -17,7 +20,7 @@ Twitter Grapher is an open source project for visualizing large data from multip
 <p>`mvn install:install-file -Dfile=src/lib/uk-ac-ox-oii-sigmaexporter.jar -DgroupId=uk-ac-ox-oii-sigmaexporter -DartifactId=uk-ac-ox-oii-sigmaexporter -Dversion=1.0 -Dpackaging=jar`</p>
 
 # How to build the application
-1. <p>navigate to twitter-grapher directory and run the following commands</p>
+1. <p>navigate to the twitter-grapher directory and run the following commands</p>
   `mvn clean compile`<br>
   `mvn clean package`<br>
 
