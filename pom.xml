@@ -63,28 +63,28 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.12</version>
 		</dependency>
-		
+
 		<!-- GephiTookit dependency -->
 		<dependency>
 			<groupId>gephi-toolkit</groupId>
 			<artifactId>gephi-toolkit</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
 		<!-- Chinese Whispers Clustering clustering algorithm -->
 		<dependency>
 			<groupId>gephi-cw</groupId>
 			<artifactId>gephi-cw</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		
+
 		<!-- SigmaExporter dependency -->
 		<dependency>
 			<groupId>uk-ac-ox-oii-sigmaexporter</groupId>
 			<artifactId>uk-ac-ox-oii-sigmaexporter</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -93,6 +93,37 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<!-- include templates -->
+		<resources>
+			<!-- include html pages -->
+			<resource>
+				<directory>src/main/java/com/tg/templates</directory>
+				<includes>
+					<include>info.html</include>
+					<include>index.html</include>
+				</includes>
+				<targetPath>${project.build.directory}/classes/com/tg/templates</targetPath>
+			</resource>
+			
+			<!-- include css file -->
+			<resource>
+				<directory>src/main/java/com/tg/templates/css</directory>
+				<includes>
+					<include>style.css</include>
+				</includes>
+				<targetPath>${project.build.directory}/classes/com/tg/templates/css</targetPath>
+			</resource>
+			
+			<!-- include js files -->
+			<resource>
+				<directory>src/main/java/com/tg/templates/js</directory>
+				<includes>
+					<include>sigma.min.js</include>
+					<include>sigma.parsers.json.min.js</include>
+				</includes>
+				<targetPath>${project.build.directory}/classes/com/tg/templates/js</targetPath>
+			</resource>
+		</resources>
 
 		<pluginManagement>
 			<plugins>

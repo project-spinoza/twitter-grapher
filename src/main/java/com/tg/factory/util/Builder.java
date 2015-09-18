@@ -59,7 +59,7 @@ public class Builder {
      try {
          //File file = new File(getClass().getResource("/org/gephi/toolkit/demos/resources/polblogs.gml").toURI());
          //File file = new File("polblogs.gml");
-         File file = new File("tweetfile.tweet");
+         File file = new File(settings.get("input_file").toString());
          container = importController.importFile(file);
          container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED);   //Force DIRECTED
      } catch (Exception ex) {

@@ -39,7 +39,8 @@ public class GraphServer extends AbstractVerticle {
 	    	 Map<String, Object> as = aso.getMap();
 	    	 JsonObject gso = (JsonObject) settings.get("graph_settings");
 	    	 Map<String, Object> gs = gso.getMap();
-	    
+	    	 
+	    	 ls.put("input_file", as.get("input_file"));
 	    	  
 	    	 /*if(getdata.equals("file")){
 	    		  path = as.get("input_file").toString();
