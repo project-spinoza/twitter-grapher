@@ -1,6 +1,12 @@
 # twitter-grapher
 Twitter Grapher is an open source project for visualizing large data from multiple sources...<br/>
 
+# Installation
+<p>Prerequisites<p>
+1. Java
+2. Maven
+
+
 # Adding dependencies
 <p>twitter-grapher have some dependencies, so before building the application you've to add them first.</p>
 1. clone the twitter-grapher repository on your machine.<br/>
