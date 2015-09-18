@@ -3,7 +3,7 @@ Twitter Grapher is an open source project for visualizing large data from multip
 
 # Installation
 <p>Prerequisites</p>
-1. Java<br>
+1. Java 8<br>
 2. Maven<br>
 
 
