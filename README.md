@@ -3,8 +3,8 @@ Twitter Grapher is an open source project for visualizing large data from multip
 
 # Installation
 <p>Prerequisites<p>
-1. Java
-2. Maven
+1. Java<br>
+2. Maven<br>
 
 
 # Adding dependencies
@@ -18,8 +18,8 @@ Twitter Grapher is an open source project for visualizing large data from multip
 
 # How to build the application
 1. <p>navigate to twitter-grapher directory and run the following commands</p>
-  `mvn clean compile`<br/>
-  `mvn clean package`<br/>
+  `mvn clean compile`<br>
+  `mvn clean package`<br>
 
 # Running the application
 1. <p>navigate to the target directory and run the following command</p>
