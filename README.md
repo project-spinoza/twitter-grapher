@@ -2,7 +2,7 @@
 Twitter Grapher is an open source project for visualizing large data from multiple sources...<br/>
 
 # Adding dependencies
-<p>twitter-grapher have some dependencies so before building the application you've to add them first.</p>
+<p>twitter-grapher have some dependencies, so before building the application you've to add them first.</p>
 1. clone the twitter-grapher repository on your machine.<br/>
    `git clone https://github.com/project-spinoza/twitter-grapher.git`<br/>
 2. <p>To add dependencies run the following commands from the root directory of twitter-grapher</p>
