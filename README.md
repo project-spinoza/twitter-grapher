@@ -26,7 +26,7 @@ Twitter Grapher is an open source project for visualizing large data from multip
 
 ### Running at the command line
 <p>run the following command from the root directory</p>
-<p>`java -jar target/twitter-grapher-v1.0-fat.jar -conf config.json`</p>
+`java -jar target/twitter-grapher-v1.0-fat.jar -conf config.json`
 
 ### Running in your IDE (Eclipse)
 1. Import twitter-grapher project
