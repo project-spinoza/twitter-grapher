@@ -36,5 +36,6 @@ Twitter Grapher is an open source project for visualizing large data from multip
 <p>`-conf config.json`</p>
 3. <p>Run `com.tg.TwitterGrapher.java`</p>
 
-### Open your favorite web browser and navigate to:
-<p>`localhost:8080/graph`</p>
+### Running in your IDE (Eclipse)
+1. Import twitter-grapher project
+<p>`http://localhost:8080/graph`</p>
