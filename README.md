@@ -34,6 +34,6 @@ Twitter Grapher is an open source project for visualizing large data from multip
 2. Set Configuration file (`config.json`) located in the root directory
 <p>In IDE Navigate to `Run -> Run Configurations` then select `Arguments` tab, In the `Program arguments` add the following:</p>
 <p>`-conf config.json`</p>
-3. Run `com.tg.TwitterGrapher.java`
-<br>
-### open your favorite web browser and navigate to `localhost:8080/graph`
+3. <p>Run `com.tg.TwitterGrapher.java`</p>
+
+### Open your favorite web browser and navigate to `localhost:8080/graph`
