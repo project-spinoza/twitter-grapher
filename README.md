@@ -19,11 +19,10 @@ Twitter Grapher is an open source project for visualizing large data from multip
 <p>`mvn install:install-file -Dfile=src/lib/uk-ac-ox-oii-sigmaexporter.jar -DgroupId=uk-ac-ox-oii-sigmaexporter -DartifactId=uk-ac-ox-oii-sigmaexporter -Dversion=1.0 -Dpackaging=jar`</p>
 
 # How to build the application
-1. <p>navigate to the twitter-grapher directory and run the following commands</p>
-  `mvn clean compile`<br>
-  `mvn clean package`<br>
+1. <p>navigate to the twitter-grapher directory and run the following command</p>
+  `mvn clean compile package`<br>
 
 # Running the application
-1. <p>navigate to the target directory and run the following command</p>
-  <p>`java -jar twitter-grapher-v1.0-fat.jar -conf ../config.json`</p>
+1. <p>run the following command from the root directory</p>
+  <p>`java -jar target/twitter-grapher-v1.0-fat.jar -conf config.json`</p>
 2. <p>open your favorite web browser and navigate to `localhost:8080/graph`</p>
