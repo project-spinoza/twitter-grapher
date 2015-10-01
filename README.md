@@ -23,6 +23,16 @@ Twitter Grapher is an open source project for visualizing large data from multip
   `mvn clean compile package`<br>
 
 # Running the application
+
+## Running at the command line
 1. <p>run the following command from the root directory</p>
   <p>`java -jar target/twitter-grapher-v1.0-fat.jar -conf config.json`</p>
 2. <p>open your favorite web browser and navigate to `localhost:8080/graph`</p>
+
+## Running in your IDE (Eclipse)
+1. Import twitter-grapher project
+<p>`File -> Import -> Existing Maven Projects`</p>
+2. Set Configuration file (`config.json`) located in the root directory
+<p>Navigate to `Run -> Run Configurations` Select `Arguments`, In the `Program arguments` add the following tab</p>
+<p>`-conf config.json`</p>
+3. Run `com.tg.TwitterGrapher.java`
