@@ -1,7 +1,7 @@
 {
     "app_settings": {
         "getdata": "file",
-        "input_file": "../tweetfile.tweet",
+        "input_file": "tweetfile.tweet",
         "port": 8080
     },
     "layout_settings": {
