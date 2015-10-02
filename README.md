@@ -10,7 +10,7 @@ Twitter Grapher is an open source project for visualizing large data from multip
 # Adding dependencies
 <p>twitter-grapher have some dependencies, so before building the application you've to add them first.</p>
 #### Note:
-<p>Please clone the Project to directory whose path doesn't contain blank spaces.</p>
+<p>Clone the Project to directory whose path doesn't contain blank spaces.</p>
 1. clone the twitter-grapher repository on your machine.<br/>
    `git clone https://github.com/project-spinoza/twitter-grapher.git`<br/>
 2. <p>To add dependencies run the following commands from the root directory of twitter-grapher</p>
