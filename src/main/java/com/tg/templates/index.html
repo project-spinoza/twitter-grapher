@@ -1,60 +1,187 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Good Thymes Virtual Grocery</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
- <link rel="stylesheet" type="text/css" href="templates/css/style.css" /> 
-  <style type="text/css">
-  #container {
-    max-width: 1200px;
-    height: 800px;
-    margin: auto;
-  }
-</style> 
+<title>Good Thymes Virtual Grocery</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="templates/css/style.css" />
+<style type="text/css">
+#clickbtn{
+     padding:10px 20px 10px 20px;
+     background-color:#FFA800;
+
+}
+#options{
+text-align:center;
+height:45px;
+}
+#container {
+	max-width: 1200px;
+	height: 800px;
+	margin: auto;
+}
+#filters,#layouts{
+      display:none;
+      margin:10px;
+      
+}
+a{
+   color:white;
+    text-decoration: none;
+     display: inline;
+}
+</style>
 </head>
 
 <body>
-<script src="templates/js/sigma.min.js"></script>
-<script src="templates/js/sigma.parsers.json.min.js"></script>
-<script th:inline="javascript">
-/*<![CDATA[*/
+	<script src="templates/js/sigma.min.js"></script>
+	<script src="templates/js/sigma.parsers.json.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script th:inline="javascript">
 
-/*[+
 
 var d = [[${context.get('nodes')}]];
 var Gsetting = [[${context.get('graph_settings')}]];
 var color = [[${context.get('color')}]];
 var ls = [[${context.get('ls')}]];
-+]*/
 
-//console.log(d);
-
-/*]]>*/
 </script>
-<form method = "get" action="/graph" ENCTYPE="application/x-www-form-urlencoded" name="wibble">
-<input type="text" name="searchField"/>
-<input type="submit"/>
-</form>
-<div id="container"></div>
+<div id="options"><a href="#" id="filterOption" >FIlters</a>&nbsp;&nbsp;&nbsp;<a href="#" id="layoutOption">Layouts</a>&nbsp;&nbsp;&nbsp;<a href="#" id="clickbtn">Submit</a></div>
+	
+	<form>
+		
+		<fieldset id="filters">
+			<legend style="color: silver">Filter</legend>
+			&nbsp;&nbsp;&nbsp;
+			<span style="color: silver">ByTerm</span>&nbsp;&nbsp;&nbsp; <input type="text"
+				name="searchField" id="searchField" /> &nbsp;&nbsp;&nbsp;<span style="color: silver">ByNodeCentarlity</span>&nbsp;&nbsp;&nbsp;<input
+				type="text" name="nc" id="nc" />&nbsp;&nbsp;&nbsp; <span style="color: silver">ByPageRank</span>&nbsp;&nbsp;&nbsp;<input
+				type="text" name="prt" id="prt" />
 
-<b>it grocery store</b>
-<p th:text="${context.get('welcome')}">Welcome to our grocery store!</p>
-<script>
+		</fieldset>
+
+		
+		<fieldset id="layouts">
+			<legend style="color: silver">Layout</legend>
+			&nbsp;&nbsp;&nbsp;
+			<span style="color: silver">Layout</span> &nbsp;&nbsp;&nbsp;<select name="layouttype"
+				id="lt">
+				<option value="FruchtermanReingold">FruchtermanReingold</option>
+				<option value="ForceAtlasLayout">ForceAtlasLayout</option>
+				<option value="YifanHuLayout">YifanHuLayout</option>
+
+			</select>&nbsp;&nbsp;&nbsp; <span style="color: silver">NodeSizeBy</span>&nbsp;&nbsp;&nbsp;<select
+				name="NodeSizeBy" id="NCB">
+				<option value="PageRank">PageRank</option>
+				<option value="NodeCentrality">NodeCentrality</option>
+			</select> &nbsp;&nbsp;&nbsp;<!--<input type="button" id="clickbtn" value="submit" />-->
+
+
+		</fieldset>
+
+
+
+	</form>
+	<div id="container"></div>
+
+	<b>it grocery store</b>
+	<p th:text="${context.get('welcome')}">Welcome to our grocery
+		store!</p>
+	<script th:inline="javascript">
 document.body.style.backgroundColor = color;
 console.log(ls);
 var json1 =d;//{  "nodes": [    d,    {      "id": "n1",      "label": "B node",      "x": 3,      "y": 1,      "size": 2    },    {      "id": "n2",      "label": "C node",      "x": 1,      "y": 3,      "size": 1    }  ],  "edges": [    {      "id": "e0",      "source": "n0",      "target": "n1"           },    {      "id": "e1",      "source": "n1",      "target": "n2"         },    {      "id": "e2",      "source": "n2",      "target": "n0"           }  ]};
 	//s = new sigma.parsers.json('data.json', {
-	s = new sigma( {
-    //container: 'graph-container',
-graph : json1,
-	renderer: {
-container: document.getElementById('container'),
-type: 'canvas'
-},
-    settings:Gsetting
-  });
+  
   //console.log(json1);
-</script>
+  showGraph(json1, document.getElementById('container'), Gsetting);
+  $('#filterOption').click(function() {
+	  $("#filters").css("display", "block");
+	  $("#layouts").css("display", "none");
+  });
+ $('#layoutOption').click(function() {
+	 $("#layouts").css("display", "block");
+	 $("#filters").css("display", "none");
+  });
+  
+   $('#clickbtn').click(function() {
+    var searchFieldValue = $("#searchField").val();
+    console.log("searchvalue"+searchFieldValue);
+    var ncValue = $("#nc").val();
+    var prtValue = $("#prt").val();
+    var layoutValue=$('#lt').val();
+    var NodeSizeByValue=$('#NCB').val();
+    if(ncValue==''){
+    	
+    		ncValue="null";
+    	
+    	}
+    if(prtValue=='')
+    	{
+    		prtValue="null";
+    	}
+    
+    var lssettings= {
+        "limit": 5000,
+        "ES_SERVER_IP": "52.4.65.24",
+        "sentiment": "null",
+        "sampleSize": 5000,
+        "samplingRatio": 75,
+        "estimatedTime": 500,
+        "nct": 10,
+        "prt": 10,
+        "la": {
+            "name": "YifanHuLayout",
+            "it": 100,
+            "distance": 260
+        }
+    };
+    
+    
+    
+   jQuery.ajax({
+    type: "get",
+   // url: "http://localhost:8080/graph?searchField="+$("#searchField").val(),
+   url: "http://localhost:8080/ajax",
+   data:{searchField:searchFieldValue,nc:ncValue,prt:prtValue,layouttype:layoutValue,NodeSizeBy:NodeSizeByValue,ls:JSON.stringify(lssettings)},
+     async : true,
+    beforeSend: function(xhr) { 
+    console.log("befoer send...");
+    },
+
+   // dataType: "json",
+    success: function (graphData) {
+      
+    
+     nodesObject = JSON.parse(graphData);
+    
+      
+     showGraph(nodesObject.nodes, document.getElementById('container'), Gsetting);
+    
+    },
+error: function(a, b, c){
+  console.log(a);
+  console.log(b);
+  console.log(c);
+}
+});
+});
+   function showGraph(givenData, givenContainer, givenSettings){
+    givenContainer.innerHTML = "";
+         console.log(givenData);
+         s = new sigma( {
+            //container: 'graph-container',
+            graph : givenData,
+            renderer: {
+              //container: document.getElementById('container'),
+              container:givenContainer,
+              type: 'canvas'
+            },
+            settings:givenSettings
+          });
+   }
+  </script>
 
 </body>
 
