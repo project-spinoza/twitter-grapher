@@ -6,29 +6,31 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="templates/css/style.css" />
 <style type="text/css">
-#clickbtn{
-     padding:10px 20px 10px 20px;
-     background-color:#FFA800;
+#clickbtn {
+	padding: 10px 20px 10px 20px;
+	background-color: #FFA800;
+}
 
+#options {
+	text-align: center;
+	height: 45px;
 }
-#options{
-text-align:center;
-height:45px;
-}
+
 #container {
 	max-width: 1200px;
 	height: 800px;
 	margin: auto;
 }
-#filters,#layouts{
-      display:none;
-      margin:10px;
-      
+
+#filters, #layouts {
+	display: none;
+	margin: 10px;
 }
-a{
-   color:white;
-    text-decoration: none;
-     display: inline;
+
+a {
+	color: white;
+	text-decoration: none;
+	display: inline;
 }
 </style>
 </head>
@@ -47,26 +49,30 @@ var color = [[${context.get('color')}]];
 var ls = [[${context.get('ls')}]];
 
 </script>
-<div id="options"><a href="#" id="filterOption" >FIlters</a>&nbsp;&nbsp;&nbsp;<a href="#" id="layoutOption">Layouts</a>&nbsp;&nbsp;&nbsp;<a href="#" id="clickbtn">Submit</a></div>
-	
+	<div id="options">
+		<a href="#" id="filterOption">FIlters</a>&nbsp;&nbsp;&nbsp;<a
+			href="#" id="layoutOption">Layouts</a>&nbsp;&nbsp;&nbsp;<a href="#"
+			id="clickbtn">Submit</a>
+	</div>
+
 	<form>
-		
+
 		<fieldset id="filters">
 			<legend style="color: silver">Filter</legend>
-			&nbsp;&nbsp;&nbsp;
-			<span style="color: silver">ByTerm</span>&nbsp;&nbsp;&nbsp; <input type="text"
-				name="searchField" id="searchField" /> &nbsp;&nbsp;&nbsp;<span style="color: silver">ByNodeCentarlity</span>&nbsp;&nbsp;&nbsp;<input
-				type="text" name="nc" id="nc" />&nbsp;&nbsp;&nbsp; <span style="color: silver">ByPageRank</span>&nbsp;&nbsp;&nbsp;<input
+			&nbsp;&nbsp;&nbsp; <span style="color: silver">ByTerm</span>&nbsp;&nbsp;&nbsp;
+			<input type="text" name="searchField" id="searchField" />
+			&nbsp;&nbsp;&nbsp;<span style="color: silver">ByNodeCentarlity</span>&nbsp;&nbsp;&nbsp;<input
+				type="text" name="nc" id="nc" />&nbsp;&nbsp;&nbsp; <span
+				style="color: silver">ByPageRank</span>&nbsp;&nbsp;&nbsp;<input
 				type="text" name="prt" id="prt" />
 
 		</fieldset>
 
-		
+
 		<fieldset id="layouts">
 			<legend style="color: silver">Layout</legend>
-			&nbsp;&nbsp;&nbsp;
-			<span style="color: silver">Layout</span> &nbsp;&nbsp;&nbsp;<select name="layouttype"
-				id="lt">
+			&nbsp;&nbsp;&nbsp; <span style="color: silver">Layout</span>
+			&nbsp;&nbsp;&nbsp;<select name="layouttype" id="lt">
 				<option value="FruchtermanReingold">FruchtermanReingold</option>
 				<option value="ForceAtlasLayout">ForceAtlasLayout</option>
 				<option value="YifanHuLayout">YifanHuLayout</option>
@@ -75,7 +81,8 @@ var ls = [[${context.get('ls')}]];
 				name="NodeSizeBy" id="NCB">
 				<option value="PageRank">PageRank</option>
 				<option value="NodeCentrality">NodeCentrality</option>
-			</select> &nbsp;&nbsp;&nbsp;<!--<input type="button" id="clickbtn" value="submit" />-->
+			</select> &nbsp;&nbsp;&nbsp;
+			<!--<input type="button" id="clickbtn" value="submit" />-->
 
 
 		</fieldset>
@@ -180,6 +187,14 @@ error: function(a, b, c){
             },
             settings:givenSettings
           });
+     totalEdges = s.graph.edges();
+   console.log(totalEdges[totalEdges.length-1]);
+   for (var i in totalEdges) {
+ 	 totalEdges[i].type = 'curve';
+ 	}
+   for (var i in totalEdges) {
+	 	 console.log(totalEdges[i]);
+	 	} 
    }
   </script>
 

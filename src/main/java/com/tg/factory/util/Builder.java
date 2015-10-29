@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.io.File;
 import java.util.Map;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -303,8 +305,11 @@ public class Builder {
 				Boolean.TRUE);
 		// model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new
 		// EdgeColor(Color.GRAY));
+		 model.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 100f);
+		 
 		model.getProperties().putValue(PreviewProperty.EDGE_THICKNESS,
-				new Float(0.1f));
+				new Float(0.5f));
+		model.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.TRUE);
 		model.getProperties().putValue(
 				PreviewProperty.NODE_LABEL_FONT,
 				model.getProperties()
