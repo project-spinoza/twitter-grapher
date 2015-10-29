@@ -10,7 +10,7 @@ Twitter Grapher is an open source project for visualizing large data from multip
 # Adding dependencies
 <p>twitter-grapher have some dependencies, so before building the application you've to add them first.</p>
 #### Note:
-<p>Please clone the Project to directory whose path doesn't contain blank spaces.</p>
+<p>Clone the Project to directory whose path doesn't contain blank spaces.</p>
 1. clone the twitter-grapher repository on your machine.<br/>
    `git clone https://github.com/project-spinoza/twitter-grapher.git`<br/>
 2. <p>To add dependencies run the following commands from the root directory of twitter-grapher</p>
@@ -19,11 +19,22 @@ Twitter Grapher is an open source project for visualizing large data from multip
 <p>`mvn install:install-file -Dfile=src/lib/uk-ac-ox-oii-sigmaexporter.jar -DgroupId=uk-ac-ox-oii-sigmaexporter -DartifactId=uk-ac-ox-oii-sigmaexporter -Dversion=1.0 -Dpackaging=jar`</p>
 
 # How to build the application
-1. <p>navigate to the twitter-grapher directory and run the following commands</p>
-  `mvn clean compile`<br>
-  `mvn clean package`<br>
+1. <p>navigate to the twitter-grapher directory and run the following command</p>
+  `mvn clean compile package`<br>
 
 # Running the application
-1. <p>navigate to the target directory and run the following command</p>
-  <p>`java -jar twitter-grapher-v1.0-fat.jar -conf ../config.json`</p>
-2. <p>open your favorite web browser and navigate to `localhost:8080/graph`</p>
+
+### Running at the command line
+<p>run the following command from the root directory</p>
+`java -jar target/twitter-grapher-v1.0-fat.jar -conf config.json`
+
+### Running in your IDE (Eclipse)
+1. Import twitter-grapher project
+<p>`File -> Import -> Existing Maven Projects`</p>
+2. Set Configuration file (`config.json`) located in the root directory
+<p>In IDE Navigate to `Run -> Run Configurations` then select `Arguments` tab, In the `Program arguments` add the following:</p>
+<p>`-conf config.json`</p>
+3. <p>Run `com.tg.TwitterGrapher.java`</p>
+
+### Open your favorite web browser
+Navigate to `http://localhost:8080/graph`
