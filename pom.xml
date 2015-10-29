@@ -24,6 +24,7 @@
 			<version>${vertx.version}</version>
 		</dependency>
 
+
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
@@ -104,7 +105,7 @@
 				</includes>
 				<targetPath>${project.build.directory}/classes/com/tg/templates</targetPath>
 			</resource>
-			
+
 			<!-- include css file -->
 			<resource>
 				<directory>src/main/java/com/tg/templates/css</directory>
@@ -113,7 +114,7 @@
 				</includes>
 				<targetPath>${project.build.directory}/classes/com/tg/templates/css</targetPath>
 			</resource>
-			
+
 			<!-- include js files -->
 			<resource>
 				<directory>src/main/java/com/tg/templates/js</directory>
