@@ -123,9 +123,19 @@ public class ImporterTweet implements FileImporter, LongTask {
 			if (line == null || line.isEmpty()) {
             	continue;
             }
+			/**
+			 *  remove invalid characters
+			 *  remove everything from tweet except:
+			 *  1. a-z, A-Z, digits [0-9]
+			 *  2. characters: _, -, #
+			 *  
+			 *  escape: escape character
+			 */
 			
+			//String x = "adfd df df dfd dfd fd";
+			  
 			line = line.toLowerCase();
-			
+			System.out.println(line);
 			if(sv != null){
 				sv = sv.toLowerCase();
 				String[] svp = sv.split(" ");
@@ -149,7 +159,7 @@ public class ImporterTweet implements FileImporter, LongTask {
 		
 		return tweets;
 	}
-	private List<String[]> buildEdges(String tweet){
+	private static List<String[]> buildEdges(String tweet){
 		
 		List<String[]> edges = new ArrayList<String[]>();
 		
@@ -160,7 +170,8 @@ public class ImporterTweet implements FileImporter, LongTask {
 		Set<String> tags = new HashSet<String>();
 		
 		for (String part : parts) {
-			part = part.trim();
+			
+			part=part.trim();
 			if (part.length() < 2)
 				continue;
 			if (part.equals("#rt"))
@@ -173,13 +184,20 @@ public class ImporterTweet implements FileImporter, LongTask {
 					String[] subParts = part.split("#");
 					for(String sb : subParts){
 						sb = sb.replaceAll("[^a-zA-Z0-9_-]", "").trim();
-						tags.add(sb);
+						sb = sb.replace("\\s","");
+						if(sb.length() > 1){
+							tags.add(sb);
+						}
 					}
 					
 					continue;
 				}
 				part = part.replaceAll("[^a-zA-Z0-9_-]", "").trim();
-				tags.add(part);
+				
+				part = part.replace("\\s","");
+				if(part.length() > 1){
+					tags.add(part);
+				}
 			}
 		}
 
@@ -200,6 +218,7 @@ public class ImporterTweet implements FileImporter, LongTask {
 
 		return edges;
 	}
+	
 	
 	@Override
 	public ContainerLoader getContainer() {

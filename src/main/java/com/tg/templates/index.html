@@ -3,6 +3,7 @@
 	xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Good Thymes Virtual Grocery</title>
+<meta charset="utf-8"/>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="templates/css/style.css" />
 <style type="text/css">
@@ -40,7 +41,8 @@ a {
 	<script src="templates/js/sigma.parsers.json.min.js"></script>
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-	<script th:inline="javascript">
+
+  <script th:inline="javascript">
 
 
 var d = [[${context.get('nodes')}]];
