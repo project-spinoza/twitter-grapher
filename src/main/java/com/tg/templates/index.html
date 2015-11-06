@@ -75,9 +75,10 @@ var ls = [[${context.get('ls')}]];
 			<legend style="color: silver">Layout</legend>
 			&nbsp;&nbsp;&nbsp; <span style="color: silver">Layout</span>
 			&nbsp;&nbsp;&nbsp;<select name="layouttype" id="lt">
+				<option value="YifanHuLayout">YifanHuLayout</option>
 				<option value="FruchtermanReingold">FruchtermanReingold</option>
 				<option value="ForceAtlasLayout">ForceAtlasLayout</option>
-				<option value="YifanHuLayout">YifanHuLayout</option>
+				
 
 			</select>&nbsp;&nbsp;&nbsp; <span style="color: silver">NodeSizeBy</span>&nbsp;&nbsp;&nbsp;<select
 				name="NodeSizeBy" id="NCB">
@@ -115,6 +116,12 @@ var json1 =d;//{  "nodes": [    d,    {      "id": "n1",      "label": "B node",
   });
   
    $('#clickbtn').click(function() {
+  	if($('#filters').css('display')=="block"){
+  	 $("#filters").css("display", "none");
+  	}
+  	else{
+  	$("#layouts").css("display", "none");
+  	}
     var searchFieldValue = $("#searchField").val();
     console.log("searchvalue"+searchFieldValue);
     var ncValue = $("#nc").val();

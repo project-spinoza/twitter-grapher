@@ -19,7 +19,7 @@
             "distance": 260
         },
         "ncb": "cluster",
-        "nsb": "nc",
+        "nsb": "pr",
         "ecb": "mix",
         "et": "curve",
         "fieldName": "text",
