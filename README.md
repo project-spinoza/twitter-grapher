@@ -1,5 +1,5 @@
 # Twitter Grapher
-Twitter Grapher is an open source project for visualizing large data from multiple sources...<br/><br/><br/>
+Twitter Grapher is an open source project for visualizing large data from multiple sources.<br/><br/><br/>
 ![WordCrowd screenshot](images/twitter-grapher1.jpg)  <br/>
 ![WordCrowd screenshot](images/twitter-grapher.jpg)  <br/>
 # Installation
