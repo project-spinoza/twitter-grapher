@@ -1,4 +1,4 @@
-package com.tg.ds;
+package org.projectspinoza.twittergrapher.ds;
 
 import java.util.List;
 

@@ -1,7 +1,4 @@
-package com.tg;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.projectspinoza.twittergrapher;
 
 import io.vertx.core.Starter;
 
@@ -11,7 +8,7 @@ import io.vertx.core.Starter;
  */
 public class TwitterGrapher 
 {
-	private static final String VERTICLE_CLASS = "com.tg.GraphServer";
+	private static final String VERTICLE_CLASS = "org.projectspinoza.twittergrapher.GraphServer";
 	public static String search_value = null;
     public static void main( String[] args )
     {

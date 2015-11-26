@@ -1,4 +1,4 @@
-package com.tg.factory.util;
+package org.projectspinoza.twittergrapher.factory.util;
 
 import java.util.Arrays;
 import java.util.Comparator;

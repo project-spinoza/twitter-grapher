@@ -1,12 +1,11 @@
-package com.tg.factory;
+package org.projectspinoza.twittergrapher.factory;
 
 import java.util.Map;
 
 import org.gephi.graph.api.Graph;
-
-import com.tg.factory.util.Builder;
-import com.tg.graph.TwitterGraph;
-import com.tg.graph.SigmaGraph;
+import org.projectspinoza.twittergrapher.factory.util.Builder;
+import org.projectspinoza.twittergrapher.graph.SigmaGraph;
+import org.projectspinoza.twittergrapher.graph.TwitterGraph;
 
 public class GraphFactory {
 	

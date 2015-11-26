@@ -1,4 +1,4 @@
-package com.tg.graph;
+package org.projectspinoza.twittergrapher.graph;
 
 import uk.ac.ox.oii.sigmaexporter.model.GraphElement;
 

@@ -1,4 +1,4 @@
-package com.tg.importers;
+package org.projectspinoza.twittergrapher.importers;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -19,8 +19,7 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-
-import com.tg.TwitterGrapher;
+import org.projectspinoza.twittergrapher.TwitterGrapher;
 
 public class ImporterTweet implements FileImporter, LongTask {
 

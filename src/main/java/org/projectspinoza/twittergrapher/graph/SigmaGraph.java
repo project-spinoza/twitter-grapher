@@ -1,4 +1,4 @@
-package com.tg.graph;
+package org.projectspinoza.twittergrapher.graph;
 
 import java.awt.Color;
 import java.util.HashSet;

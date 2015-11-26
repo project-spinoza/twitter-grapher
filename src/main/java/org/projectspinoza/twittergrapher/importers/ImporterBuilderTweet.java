@@ -1,4 +1,4 @@
-package com.tg.importers;
+package org.projectspinoza.twittergrapher.importers;
 
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporter;

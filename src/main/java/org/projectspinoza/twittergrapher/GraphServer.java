@@ -1,4 +1,4 @@
-package com.tg;
+package org.projectspinoza.twittergrapher;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -13,8 +13,8 @@ import io.vertx.ext.web.templ.ThymeleafTemplateEngine;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tg.factory.GraphFactory;
-import com.tg.graph.TwitterGraph;
+import org.projectspinoza.twittergrapher.factory.GraphFactory;
+import org.projectspinoza.twittergrapher.graph.TwitterGraph;
 
 public class GraphServer extends AbstractVerticle {
 	@Override
@@ -36,8 +36,8 @@ public class GraphServer extends AbstractVerticle {
 		JsonObject lso = (JsonObject) settings.get("layout_settings");
 		Map<String, Object> ls = lso.getMap();
 		String bk_color = ls.get("bk_color").toString();
-		JsonObject ips = (JsonObject) ls.get("ips");
-		Map<String, Object> ip = ips.getMap();
+//		JsonObject ips = (JsonObject) ls.get("ips");
+//		Map<String, Object> ip = ips.getMap();
 		JsonObject aso = (JsonObject) settings.get("app_settings");
 		Map<String, Object> as = aso.getMap();
 		JsonObject gso = (JsonObject) settings.get("graph_settings");
@@ -51,14 +51,14 @@ public class GraphServer extends AbstractVerticle {
 		int Port = Integer.parseInt(as.get("port").toString());
 
 		mainrouter.route("/templates/*").handler(
-				StaticHandler.create("com/tg/templates").setCachingEnabled(
+				StaticHandler.create("org/projectspinoza/twittergrapher/templates").setCachingEnabled(
 						false));
 
 		infoRouter.route("/").handler(
 				ct -> {
 					engine.render(
 							ct,
-							"com/tg/templates/info.html",
+							"org/projectspinoza/twittergrapher/templates/info.html",
 							res -> {
 								if (res.succeeded()) {
 									ct.response()
@@ -91,7 +91,7 @@ public class GraphServer extends AbstractVerticle {
 						// and now delegate to the engine to render it.
 						engine.render(
 								ctx,
-								"com/tg/templates/index.html",
+								"org/projectspinoza/twittergrapher/templates/index.html",
 								res -> {
 
 									if (res.succeeded()) {
@@ -117,63 +117,60 @@ public class GraphServer extends AbstractVerticle {
 						ctx -> {
 
 							MultiMap parameters = ctx.request().params();
-							
-						
-							
+
 							TwitterGrapher.search_value = parameters.get(
 									"searchField").toString();
-							if(parameters.get("NodeSizeBy").contains("PageRank")){
+							if (parameters.get("NodeSizeBy").contains(
+									"PageRank")) {
 
 								ls.put("nsb", "pr");
-								
-							}
-							else if(parameters.get("NodeSizeBy").contains("NodeCentrality")){
-								
+
+							} else if (parameters.get("NodeSizeBy").contains(
+									"NodeCentrality")) {
+
 								ls.put("nsb", "nc");
-								
+
 							}
-							
-							
-							if(parameters.get("layouttype").contains("FruchtermanReingold")){
-								JsonObject jobject = new JsonObject(ls.get("la").toString());
-								
-																
-								jobject.put("name","FruchtermanReingold");
+
+							if (parameters.get("layouttype").contains(
+									"FruchtermanReingold")) {
+								JsonObject jobject = new JsonObject(ls
+										.get("la").toString());
+
+								jobject.put("name", "FruchtermanReingold");
 								ls.put("la", jobject.toString());
-								
-							}
-							else if(parameters.get("layouttype").contains("ForceAtlasLayout")){
-								JsonObject jobject = new JsonObject(ls.get("la").toString());
-								
-																
-								jobject.put("name","ForceAtlasLayout");
+
+							} else if (parameters.get("layouttype").contains(
+									"ForceAtlasLayout")) {
+								JsonObject jobject = new JsonObject(ls
+										.get("la").toString());
+
+								jobject.put("name", "ForceAtlasLayout");
 								ls.put("la", jobject.toString());
-								
-							}
-							else if(parameters.get("layouttype").contains("YifanHuLayout")){
-								JsonObject jobject = new JsonObject(ls.get("la").toString());
-								
-																
-								jobject.put("name","YifanHuLayout");
+
+							} else if (parameters.get("layouttype").contains(
+									"YifanHuLayout")) {
+								JsonObject jobject = new JsonObject(ls
+										.get("la").toString());
+
+								jobject.put("name", "YifanHuLayout");
 								ls.put("la", jobject.toString());
-								
+
 							}
-							
-							if(!parameters.get("nc").contains("null")){
-							
-								
-								ls.put("nct",Integer.parseInt(parameters.get("nc")) );
-							}	
-							else{
-								ls.put("nct",0);
+
+							if (!parameters.get("nc").contains("null")) {
+
+								ls.put("nct",
+										Integer.parseInt(parameters.get("nc")));
+							} else {
+								ls.put("nct", 0);
 							}
-							if(!parameters.get("prt").contains("null")){
-							
-								
-								ls.put("prt",Integer.parseInt(parameters.get("prt")) );
-							}	
-							else{
-								ls.put("prt",0);
+							if (!parameters.get("prt").contains("null")) {
+
+								ls.put("prt",
+										Integer.parseInt(parameters.get("prt")));
+							} else {
+								ls.put("prt", 0);
 							}
 							ctx.put("color", bk_color);
 							ctx.put("welcome", "Hi there!");

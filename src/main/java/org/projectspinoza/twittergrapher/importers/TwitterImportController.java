@@ -1,4 +1,4 @@
-package com.tg.importers;
+package org.projectspinoza.twittergrapher.importers;
 
 import java.io.File;
 import java.io.FileNotFoundException;

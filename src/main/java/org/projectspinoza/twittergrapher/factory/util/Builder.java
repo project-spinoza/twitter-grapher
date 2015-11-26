@@ -1,4 +1,4 @@
-package com.tg.factory.util;
+package org.projectspinoza.twittergrapher.factory.util;
 
 import io.vertx.core.json.JsonObject;
 
@@ -44,11 +44,9 @@ import org.gephi.statistics.plugin.GraphDistance;
 import org.gephi.filters.plugin.graph.DegreeRangeBuilder.DegreeRangeFilter;
 import org.gephi.filters.spi.*;
 import org.openide.util.Lookup;
+import org.projectspinoza.twittergrapher.importers.TwitterImportController;
 
 import uk.ac.ox.oii.sigmaexporter.model.GraphElement;
-
-import com.tg.importers.TwitterImportController;
-
 import de.uni_leipzig.informatik.asv.gephi.chinesewhispers.ChineseWhispersClusterer;
 
 public class Builder {
