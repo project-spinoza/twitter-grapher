@@ -5,7 +5,7 @@ The purpose of this project is to allow a user to visualize large set of data fr
 # Installation
 <p>Prerequisites</p>
 1. Java 8<br>
-2. Maven<br>
+2. Maven (version > 3.0.5)<br>
 
 
 # Adding dependencies
