@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Good Thymes Virtual Grocery</title>
+<title>Twitter Grapher</title>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="templates/css/style.css" />
@@ -24,7 +24,7 @@
 }
 
 #filters, #layouts {
-	display: none;
+	/*display: none;*/
 	margin: 10px;
 }
 
@@ -37,10 +37,11 @@ a {
 </head>
 
 <body>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script src="templates/js/sigma.min.js"></script>
 	<script src="templates/js/sigma.parsers.json.min.js"></script>
-	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	
 
   <script th:inline="javascript">
 
@@ -51,44 +52,55 @@ var color = [[${context.get('color')}]];
 var ls = [[${context.get('ls')}]];
 
 </script>
-	<div id="options">
-		<a href="#" id="filterOption">FIlters</a>&nbsp;&nbsp;&nbsp;<a
-			href="#" id="layoutOption">Layouts</a>&nbsp;&nbsp;&nbsp;<a href="#"
-			id="clickbtn">Submit</a>
-	</div>
 
 	<form>
 
-		<fieldset id="filters">
-			<legend style="color: silver">Filter</legend>
-			&nbsp;&nbsp;&nbsp; <span style="color: silver">ByTerm</span>&nbsp;&nbsp;&nbsp;
-			<input type="text" name="searchField" id="searchField" />
-			&nbsp;&nbsp;&nbsp;<span style="color: silver">ByNodeCentarlity</span>&nbsp;&nbsp;&nbsp;<input
-				type="text" name="nc" id="nc" />&nbsp;&nbsp;&nbsp; <span
-				style="color: silver">ByPageRank</span>&nbsp;&nbsp;&nbsp;<input
-				type="text" name="prt" id="prt" />
-
-		</fieldset>
-
-
-		<fieldset id="layouts">
-			<legend style="color: silver">Layout</legend>
-			&nbsp;&nbsp;&nbsp; <span style="color: silver">Layout</span>
-			&nbsp;&nbsp;&nbsp;<select name="layouttype" id="lt">
-				<option value="YifanHuLayout">YifanHuLayout</option>
-				<option value="FruchtermanReingold">FruchtermanReingold</option>
-				<option value="ForceAtlasLayout">ForceAtlasLayout</option>
-				
-
-			</select>&nbsp;&nbsp;&nbsp; <span style="color: silver">NodeSizeBy</span>&nbsp;&nbsp;&nbsp;<select
-				name="NodeSizeBy" id="NCB">
-				<option value="PageRank">PageRank</option>
-				<option value="NodeCentrality">NodeCentrality</option>
-			</select> &nbsp;&nbsp;&nbsp;
-			<!--<input type="button" id="clickbtn" value="submit" />-->
+	<fieldset>
+      <legend style="color: silver">Options</legend>
+    <fieldset id="filters">
+      <legend style="color: silver">Filter</legend>
+      &nbsp;&nbsp;&nbsp; <span style="color: silver">ByTerm</span>&nbsp;&nbsp;&nbsp;
+      <input type="text" name="searchField" id="searchField" />
+      &nbsp;&nbsp;&nbsp;<span style="color: silver">ByNodeCentarlity</span>&nbsp;&nbsp;&nbsp;<input
+        type="text" name="nc" id="nc" />&nbsp;&nbsp;&nbsp; <span
+        style="color: silver">ByPageRank</span>&nbsp;&nbsp;&nbsp;<input
+        type="text" name="prt" id="prt" />&nbsp;&nbsp;&nbsp;
+  <span style="color: silver">DataSource</span>
+      &nbsp;&nbsp;&nbsp;
+      <select name="datasource" id="DS">
+        <option value="none" disabled="" selected="">-Select-</option>
+        <option value="elasticsearch">ElasticSearch</option>
+        <option value="mongodb">MongoDB</option>
+        <option value="mysql">MySQL</option>
+        <option value="inputfile">InputFile</option>
+        
+      </select>
 
 
-		</fieldset>
+
+    </fieldset>
+        <fieldset id="layouts">
+      <legend style="color: silver">Layout</legend>
+      &nbsp;&nbsp;&nbsp; <span style="color: silver">Layout</span>
+      &nbsp;&nbsp;&nbsp;<select name="layouttype" id="lt">
+        <option value="YifanHuLayout">YifanHuLayout</option>
+        <option value="FruchtermanReingold">FruchtermanReingold</option>
+        <option value="ForceAtlasLayout">ForceAtlasLayout</option>
+        
+
+      </select>&nbsp;&nbsp;&nbsp; <span style="color: silver">NodeSizeBy</span>&nbsp;&nbsp;&nbsp;<select
+        name="NodeSizeBy" id="NCB">
+        <option value="PageRank">PageRank</option>
+        <option value="NodeCentrality">NodeCentrality</option>
+      </select> &nbsp;&nbsp;&nbsp;
+      <!--<input type="button" id="clickbtn" value="submit" />-->
+
+
+    </fieldset>
+      <a href="#" id="clickbtn">Submit</a>
+
+    </fieldset>
+
 
 
 
@@ -105,8 +117,9 @@ var json1 =d;//{  "nodes": [    d,    {      "id": "n1",      "label": "B node",
 	//s = new sigma.parsers.json('data.json', {
   
   //console.log(json1);
-  showGraph(json1, document.getElementById('container'), Gsetting);
+  // showGraph(json1, document.getElementById('container'), Gsetting);
   $('#filterOption').click(function() {
+  
 	  $("#filters").css("display", "block");
 	  $("#layouts").css("display", "none");
   });
@@ -117,17 +130,19 @@ var json1 =d;//{  "nodes": [    d,    {      "id": "n1",      "label": "B node",
   
    $('#clickbtn').click(function() {
   	if($('#filters').css('display')=="block"){
-  	 $("#filters").css("display", "none");
+  	// $("#filters").css("display", "none");
   	}
   	else{
   	$("#layouts").css("display", "none");
   	}
     var searchFieldValue = $("#searchField").val();
+   
     console.log("searchvalue"+searchFieldValue);
     var ncValue = $("#nc").val();
     var prtValue = $("#prt").val();
     var layoutValue=$('#lt').val();
     var NodeSizeByValue=$('#NCB').val();
+    var datasource=$('#DS').val();
     if(ncValue==''){
     	
     		ncValue="null";
@@ -137,7 +152,9 @@ var json1 =d;//{  "nodes": [    d,    {      "id": "n1",      "label": "B node",
     	{
     		prtValue="null";
     	}
-    
+    if(datasource==''){
+    		datasource="null";
+    }
     var lssettings= {
         "limit": 5000,
         "ES_SERVER_IP": "52.4.65.24",
@@ -154,13 +171,31 @@ var json1 =d;//{  "nodes": [    d,    {      "id": "n1",      "label": "B node",
         }
     };
     
+    if(searchFieldValue==''){
+       $('#searchField').css('border','2px solid red');
+    }
+    else
+	{
+		
+		$('#searchField').css('border','');
+	}
+	
     
-    
+	 if(datasource==null){
+	 
+       $('#DS').css('border','2px solid red');
+    }
+    else
+	{
+		$('#DS').css('border','');
+	}
+	/*<![CDATA[*/
+     if(searchFieldValue!='' && datasource != "null"){
    jQuery.ajax({
     type: "get",
    // url: "http://localhost:8080/graph?searchField="+$("#searchField").val(),
    url: "http://localhost:8080/ajax",
-   data:{searchField:searchFieldValue,nc:ncValue,prt:prtValue,layouttype:layoutValue,NodeSizeBy:NodeSizeByValue,ls:JSON.stringify(lssettings)},
+   data:{searchField:searchFieldValue,nc:ncValue,prt:prtValue,layouttype:layoutValue,NodeSizeBy:NodeSizeByValue,datasource:datasource,ls:JSON.stringify(lssettings)},
      async : true,
     beforeSend: function(xhr) { 
     console.log("befoer send...");
@@ -182,7 +217,9 @@ error: function(a, b, c){
   console.log(c);
 }
 });
+}/*]]>*/
 });
+
    function showGraph(givenData, givenContainer, givenSettings){
     givenContainer.innerHTML = "";
          console.log(givenData);
