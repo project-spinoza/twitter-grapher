@@ -6,15 +6,11 @@ import java.awt.Color;
 import java.io.File;
 import java.util.Map;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.filters.api.FilterController;
-import org.gephi.filters.api.Query;
-import org.gephi.filters.api.Range;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -35,18 +31,14 @@ import org.gephi.preview.api.PreviewProperty;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.ranking.api.Ranking;
-import org.gephi.statistics.plugin.*;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.plugin.transformer.AbstractColorTransformer;
-import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
 import org.gephi.statistics.plugin.GraphDistance;
-import org.gephi.filters.plugin.graph.DegreeRangeBuilder.DegreeRangeFilter;
-import org.gephi.filters.spi.*;
+import org.gephi.statistics.plugin.PageRank;
 import org.openide.util.Lookup;
-import org.projectspinoza.twittergrapher.importers.TwitterImportController;
+import org.projectspinoza.twittergrapher.importers.DataSourceImporter;
 
-import uk.ac.ox.oii.sigmaexporter.model.GraphElement;
 import de.uni_leipzig.informatik.asv.gephi.chinesewhispers.ChineseWhispersClusterer;
 
 public class Builder {
@@ -66,10 +58,9 @@ public class Builder {
 				.lookup(GraphController.class).getModel();
 		PreviewModel model = Lookup.getDefault()
 				.lookup(PreviewController.class).getModel();
-		// ImportController importController =
-		// Lookup.getDefault().lookup(ImportController.class);
-		ImportController importController = TwitterImportController
-				.getInstance();
+		 ImportController importController =
+		 Lookup.getDefault().lookup(ImportController.class);
+		//ImportController importController = TwitterImportController.getInstance();
 		FilterController filterController = Lookup.getDefault().lookup(
 				FilterController.class);
 		RankingController rankingController = Lookup.getDefault().lookup(
@@ -92,12 +83,13 @@ public class Builder {
 		// Import file
 		Container container;
 		try {
-			// File file = new
-			// File(getClass().getResource("/org/gephi/toolkit/demos/resources/polblogs.gml").toURI());
-			// File file = new File("polblogs.gml");
-			File file = new File(settings.get("input_file").toString());
-			container = importController.importFile(file);
-			container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED); // Force
+			if(DataSourceType.contains(settings.get("dataSourceType").toString())){
+			    container = (new DataSourceImporter()).importDataSource(settings);
+			}else{
+			    File file = new File(settings.get("input_file").toString());
+			    container = importController.importFile(file);
+			}
+			//container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED); // Force
 																		// DIRECTED
 		} catch (Exception ex) {
 			ex.printStackTrace();
