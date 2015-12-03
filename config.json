@@ -49,11 +49,21 @@
         "elasticsearch": {
             "host": "127.0.0.1",
             "port": 9300,
-            "index": "",
-            "type": ""
+            "cluster.name": "elasticsearch",
+            "index": "myindex",
+            "type": "mytype"
         },
-        "mongodb": {},
-        "mysql": {},
-        "file": {}
+        "mongodb": {
+        },
+        "mysql": {
+            "host": "127.0.0.1",
+            "port": 3306,
+            "user":"root",
+            "password":"",
+            "database": "twittergrapher",
+            "table_name": "tweets",
+            "data_column": "tweet"
+        },
+        "file": "tweets.txt"
     }
 }

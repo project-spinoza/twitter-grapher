@@ -1,5 +1,6 @@
 package org.projectspinoza.twittergrapher.importers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,12 +15,18 @@ import org.gephi.io.importer.impl.ImportContainerImpl;
 
 public class DataSourceImporter {
     private ImportContainerImpl container;
-    private Map<String, Object> settings;
 
-    public ImportContainerImpl importDataSource(Map<String, Object> settings) {
-        this.settings = settings;
-        List<String> tweets = null;
-        
+
+    @SuppressWarnings("unchecked")
+	public ImportContainerImpl importDataSource(Map<String, Object> settings) {
+
+    	List<String> tweets = null;  
+		try {
+			tweets = new DataImporter((Map<String, Object>) settings.get("settings")).importDataList();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
         container = new ImportContainerImpl();
         for (String tweet : tweets) {
             List<String[]> edges = buildEdges(tweet);

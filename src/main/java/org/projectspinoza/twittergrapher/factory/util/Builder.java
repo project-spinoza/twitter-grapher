@@ -82,9 +82,9 @@ public class Builder {
 
 		// Import file
 		Container container;
-		try {
-			if(DataSourceType.contains(settings.get("dataSourceType").toString())){
-			    container = (new DataSourceImporter()).importDataSource(settings);
+		try {										 
+			if(DataSourceType.contains(((Map<String,Object>)settings.get("settings")).get("source_selected").toString())){
+				container = (new DataSourceImporter()).importDataSource(settings);
 			}else{
 			    File file = new File(settings.get("input_file").toString());
 			    container = importController.importFile(file);

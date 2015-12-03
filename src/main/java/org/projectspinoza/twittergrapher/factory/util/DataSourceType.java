@@ -1,7 +1,7 @@
 package org.projectspinoza.twittergrapher.factory.util;
 
 public enum DataSourceType {
-    ELASTICSEARCH("elasticsearch"), MONGODB("mongodb"), MYSQL("mysql"), FILE("file");
+    ELASTICSEARCH("elasticsearch"), MONGODB("mongodb"), MYSQL("mysql"), FILE("inputfile");
 
     private final String dataSourceType;
 

@@ -3,6 +3,8 @@ package org.projectspinoza.twittergrapher;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.MultiMap;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -15,7 +17,6 @@ import java.util.Map;
 
 import org.projectspinoza.twittergrapher.factory.GraphFactory;
 import org.projectspinoza.twittergrapher.graph.TwitterGraph;
-import org.projectspinoza.twittergrapher.importers.ImporterElasticSearch;
 
 
 public class GraphServer extends AbstractVerticle {
@@ -30,9 +31,9 @@ public class GraphServer extends AbstractVerticle {
 		JsonObject config = context.config();
 		
 		//extracting data_sources
-		JsonObject data_sources = config.getJsonObject("data_sources");
-		final JsonObject elasticsearch_cred_json = data_sources.getJsonObject("elasticsearch");
-		
+		JsonObject data_sources_cred = config.getJsonObject("data_sources");
+//		final JsonObject elasticsearch_cred_json = data_sources.getJsonObject("elasticsearch");
+	
 		Map<String, Object> settings = config.getMap();
 		JsonObject lso = (JsonObject) settings.get("layout_settings");
 		Map<String, Object> layout_settings = lso.getMap();
@@ -41,6 +42,7 @@ public class GraphServer extends AbstractVerticle {
 //		Map<String, Object> app_settings_map = app_settings.getMap();
 		JsonObject graph_settings = (JsonObject) settings.get("graph_settings");
 //		Map<String, Object> gs = graph_settings.getMap();
+		final Map<String, Object> sources_settings = new HashMap<String, Object>();
 
 		layout_settings.put("input_file", app_settings.getString("input_file"));
 
@@ -120,41 +122,29 @@ public class GraphServer extends AbstractVerticle {
 			} else {
 				layout_settings.put("prt", 0);
 			}
-					
-			switch (data_source) {
-				case "elasticsearch":
-//						ImporterElasticSearch esImporter = new ImporterElasticSearch(elasticsearch_cred_json);
-//						if (esImporter.connect()) {
-//							System.out.println("Connected");
-//							esImporter.Search(elasticsearch_cred_json.getString("index"), elasticsearch_cred_json.getString("type"), query_str, 100);
-//						}else {
-//							ctx.request().response().end("Error connecting to Elasticsearch...!");
-//						}
-						System.out.println("Received Elasticsearch Request"+ TwitterGrapher.search_value);
-					break;
-				case "mongodb":
-					System.out.println("Received mongodb Request"+TwitterGrapher.search_value);
-					break;
-				case "mysql":
-					System.out.println("Received mysql Request"+TwitterGrapher.search_value);
-					break;
-				case "inputfile":
-						
-						ctx.put("color", layout_settings.get("bk_color").toString());
-						ctx.put("graph_settings", graph_settings.getMap());
-						// . generating graph...
-						String type = "sigmaGraph";
-						GraphFactory graphFactory = new GraphFactory();
-						TwitterGraph graph = graphFactory.getGraph(type, layout_settings);
-						Map<String, Object> result = new HashMap<String, Object>();
-						result.put("nodes", graph);
-						JsonObject result_json = new JsonObject(result);
-						ctx.response().end(result_json.toString());
-						
-						break;
-					}
+			
+			
+			sources_settings.put("source_selected", data_source);
+			sources_settings.put("query_str", TwitterGrapher.search_value);
+			sources_settings.put("sources_cred", data_sources_cred);
+			layout_settings.put("settings", sources_settings);
+			
+			ctx.put("color", layout_settings.get("bk_color").toString());
+			ctx.put("graph_settings", graph_settings.getMap());
+			
+			// . generating graph...
+			String type = "sigmaGraph";
+			GraphFactory graphFactory = new GraphFactory();
+			TwitterGraph graph = graphFactory.getGraph(type, layout_settings);
+			Map<String, Object> result = new HashMap<String, Object>();
+			result.put("nodes", graph);
+			ctx.response().end(new JsonObject(result).toString());
+			
 			});
-		vertx.createHttpServer().requestHandler(mainrouter::accept)
+	VertxOptions options = new VertxOptions(); 
+	options.setMaxEventLoopExecuteTime(Long.MAX_VALUE);
+	vertx = Vertx.vertx(options);
+	vertx.createHttpServer().requestHandler(mainrouter::accept)
 				.listen(Port);
 	}
 

@@ -2,10 +2,7 @@ package org.projectspinoza.twittergrapher;
 
 import io.vertx.core.Starter;
 
-/**
- * Hello world!
- *
- */
+
 public class TwitterGrapher 
 {
 	private static final String VERTICLE_CLASS = "org.projectspinoza.twittergrapher.GraphServer";
