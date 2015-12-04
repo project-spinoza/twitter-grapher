@@ -209,7 +209,7 @@ public class DataImporter {
 		return verifyConnection();
 	}
 
-	public boolean verifyConnection() {
+	private boolean verifyConnection() {
 		ImmutableList<DiscoveryNode> nodes = this.elasticSearchClient
 				.connectedNodes();
 		if (nodes.isEmpty()) {
@@ -219,7 +219,7 @@ public class DataImporter {
 		}
 	}
 
-	public List<String> elasticsearch_search(String indexname, String typename,
+	private List<String> elasticsearch_search(String indexname, String typename,
 			String query_terms, int size) {
 
 		List<String> response_list = new ArrayList<String>();
