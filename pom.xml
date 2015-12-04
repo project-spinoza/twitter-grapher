@@ -110,6 +110,13 @@
 			<version>5.1.6</version>
 		</dependency>
 
+		<!-- monogdb dependencies -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>

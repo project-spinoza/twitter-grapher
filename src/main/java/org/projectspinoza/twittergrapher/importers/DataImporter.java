@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bson.Document;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.transport.TransportClient;
@@ -28,6 +29,11 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
 
+import com.mongodb.Block;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoDatabase;
+
 public class DataImporter {
 
 	private TransportClient elasticSearchClient;
@@ -39,6 +45,8 @@ public class DataImporter {
 	private String input_file;
 	private String query_str;
 	private String source_selected;
+	List<String> response_list_str_container = null;
+
 
 	public DataImporter(Map<String, Object> settings) {
 
@@ -56,7 +64,7 @@ public class DataImporter {
 	public List<String> importDataList() throws IOException {
 
 		List<String> response_tweets_list = null;
-
+		
 		switch (source_selected) {
 		case "elasticsearch":
 			
@@ -67,10 +75,9 @@ public class DataImporter {
 				System.out.println("Error connecting to elasticsearch...!");
 				return null;
 			}
-			
 		break;
 		case "mongodb":
-			System.out.println("Received mongodb Request" + this.query_str);
+			response_tweets_list = mongodb_search();
 			break;
 		case "mysql":
 			response_tweets_list = mysqlDataReader();
@@ -130,7 +137,35 @@ public class DataImporter {
 
 		return response_list;
 	}
+	
+	private List<String> mongodb_search() {
 
+		MongoClient mongoClient = new MongoClient(this.mongodb_cred.get("host")
+				.toString(), Integer.parseInt(this.mongodb_cred.get("port")
+				.toString()));
+		MongoDatabase db = mongoClient.getDatabase(this.mongodb_cred.get(
+				"database").toString());
+
+		FindIterable<Document> iterable = db.getCollection(
+				this.mongodb_cred.get("collection").toString()).find(
+				new Document("$text", new Document("$search", this.query_str)));
+		
+		response_list_str_container = new ArrayList<String>();
+		iterable.forEach(new TgBlock());
+		mongoClient.close();
+		return response_list_str_container;
+	}
+
+	private class TgBlock implements Block<Document> {
+
+		JsonObject tweet;
+		@Override
+		public void apply(Document document) {
+			tweet = new JsonObject(document.getString("tweet"));
+			response_list_str_container.add(tweet.getString("text"));
+		}
+	}
+	
 	private List<String> fileDataReader() throws IOException {
 
 		List<String> response_list = new ArrayList<String>();
@@ -153,7 +188,7 @@ public class DataImporter {
 		return response_list;
 	}
 
-	public boolean elasticsearch_connect() {
+	private boolean elasticsearch_connect() {
 
 			if (this.elasticsearch_cred.containsKey("cluster.name")
 					&& !this.elasticsearch_cred.get("cluster.name").toString()

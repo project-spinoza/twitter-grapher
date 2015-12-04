@@ -54,6 +54,11 @@
             "type": "mytype"
         },
         "mongodb": {
+            "host": "127.0.0.1",
+            "port": 27017,
+            "database": "twittergrapher",
+            "collection": "tweets",
+            "field":"tweet"
         },
         "mysql": {
             "host": "127.0.0.1",
