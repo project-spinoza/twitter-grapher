@@ -66,28 +66,30 @@ public class Filters {
 	}
 
 	public static Graph RemovePercentageNodes(Graph graph,
-			AttributeColumn column, double threshhold,String columnValue) {
+			AttributeColumn column, double threshhold, String columnValue) {
 		int nodestoberemoved = 0;
 		Node[] nodesN = sortgraphBasedonColoumnValue(graph, column);
 
 		nodestoberemoved = (int) Math.ceil(nodesN.length * threshhold);
-		/*System.out
-				.println("\n\n\tNodes to be removed ---- " + nodestoberemoved);
-		System.out
-		.println("\n\n\tcoloumn ---- " +columnValue);*/
+		/*
+		 * System.out .println("\n\n\tNodes to be removed ---- " +
+		 * nodestoberemoved); System.out .println("\n\n\tcoloumn ---- "
+		 * +columnValue);
+		 */
 		for (int i = 0; i < nodestoberemoved; i++) {
-			/*System.out.println("\n\n\tNodes Removed -----\t"
-					+ nodesN[i]
-					+ "----\t"
-					+ nodesN[i].getNodeData().getAttributes()
-							.getValue(columnValue)+"\n\n");*/
+			/*
+			 * System.out.println("\n\n\tNodes Removed -----\t" + nodesN[i] +
+			 * "----\t" + nodesN[i].getNodeData().getAttributes()
+			 * .getValue(columnValue)+"\n\n");
+			 */
 			graph.removeNode(nodesN[i]);
 		}
 
 		return graph;
 	}
 
-	public static void RankSize(String column, AttributeModel attributeModel, RankingController rankingController){
+	public static void RankSize(String column, AttributeModel attributeModel,
+			RankingController rankingController) {
 		AttributeColumn Column = attributeModel.getNodeTable()
 				.getColumn(column);
 
@@ -101,6 +103,7 @@ public class Filters {
 		sizeTransformer.setMaxSize(10);
 		rankingController.transform(PageRankRanking, sizeTransformer);
 	}
+
 	public static Node[] sortgraphBasedonColoumnValue(Graph graph,
 			AttributeColumn column) {
 		Node[] nodesN = graph.getNodes().toArray();

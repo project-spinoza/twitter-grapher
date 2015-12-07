@@ -47,7 +47,6 @@ public class DataImporter {
 	private String source_selected;
 	List<String> response_list_str_container = null;
 
-
 	public DataImporter(Map<String, Object> settings) {
 
 		this.sources_cred_json = (JsonObject) settings.get("sources_cred");
@@ -64,18 +63,20 @@ public class DataImporter {
 	public List<String> importDataList() throws IOException {
 
 		List<String> response_tweets_list = null;
-		
+
 		switch (source_selected) {
 		case "elasticsearch":
-			
+
 			if (elasticsearch_connect()) {
-				response_tweets_list = elasticsearch_search(this.elasticsearch_cred.get("index").toString(),
-						this.elasticsearch_cred.get("type").toString(),this.query_str,5000);
-			}else {
+				response_tweets_list = elasticsearch_search(
+						this.elasticsearch_cred.get("index").toString(),
+						this.elasticsearch_cred.get("type").toString(),
+						this.query_str, 5000);
+			} else {
 				System.out.println("Error connecting to elasticsearch...!");
 				return null;
 			}
-		break;
+			break;
 		case "mongodb":
 			response_tweets_list = mongodb_search();
 			break;
@@ -99,37 +100,46 @@ public class DataImporter {
 		Statement statement = null;
 
 		try {
-			
+
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection("jdbc:mysql://"
 					+ this.mysql_cred.get("host").toString() + ":"
 					+ this.mysql_cred.get("port").toString() + "/"
-					+ this.mysql_cred.get("database").toString(),
-					"root", "");
-			
+					+ this.mysql_cred.get("database").toString(), "root", "");
+
 			if (connection != null) {
 
 				String[] query_terms = this.query_str.trim().split(" ");
-				String query_like =" LIKE '%"+query_terms[0]+"%' ";
-				
-				for (int i=1 ; i<query_terms.length; i++) {
-					query_like.concat("or "+this.mysql_cred.get("data_column").toString()+" LIKE '%"+query_terms[i]+"%' ");
+				String query_like = " LIKE '%" + query_terms[0] + "%' ";
+
+				for (int i = 1; i < query_terms.length; i++) {
+					query_like.concat("or "
+							+ this.mysql_cred.get("data_column").toString()
+							+ " LIKE '%" + query_terms[i] + "%' ");
 				}
-				
-				String query_mysql = "SELECT "+this.mysql_cred.get("data_column").toString()+" from "+this.mysql_cred.get("table_name").toString()+" where "+this.mysql_cred.get("data_column").toString()+query_like;
+
+				String query_mysql = "SELECT "
+						+ this.mysql_cred.get("data_column").toString()
+						+ " from "
+						+ this.mysql_cred.get("table_name").toString()
+						+ " where "
+						+ this.mysql_cred.get("data_column").toString()
+						+ query_like;
 
 				statement = connection.createStatement();
 				ResultSet results_set = statement.executeQuery(query_mysql);
-				
+
 				while (results_set.next()) {
-					String tweet = results_set.getString(this.mysql_cred.get("data_column").toString());
-					response_list.add(new JSONObject(tweet).get("text").toString());
+					String tweet = results_set.getString(this.mysql_cred.get(
+							"data_column").toString());
+					response_list.add(new JSONObject(tweet).get("text")
+							.toString());
 				}
-				
-			}else {
+
+			} else {
 				System.out.println("Database connection failed...");
 			}
-			
+
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -137,7 +147,7 @@ public class DataImporter {
 
 		return response_list;
 	}
-	
+
 	private List<String> mongodb_search() {
 
 		MongoClient mongoClient = new MongoClient(this.mongodb_cred.get("host")
@@ -149,7 +159,7 @@ public class DataImporter {
 		FindIterable<Document> iterable = db.getCollection(
 				this.mongodb_cred.get("collection").toString()).find(
 				new Document("$text", new Document("$search", this.query_str)));
-		
+
 		response_list_str_container = new ArrayList<String>();
 		iterable.forEach(new TgBlock());
 		mongoClient.close();
@@ -159,13 +169,14 @@ public class DataImporter {
 	private class TgBlock implements Block<Document> {
 
 		JsonObject tweet;
+
 		@Override
 		public void apply(Document document) {
 			tweet = new JsonObject(document.getString("tweet"));
 			response_list_str_container.add(tweet.getString("text"));
 		}
 	}
-	
+
 	private List<String> fileDataReader() throws IOException {
 
 		List<String> response_list = new ArrayList<String>();
@@ -190,21 +201,26 @@ public class DataImporter {
 
 	private boolean elasticsearch_connect() {
 
-			if (this.elasticsearch_cred.containsKey("cluster.name")
-					&& !this.elasticsearch_cred.get("cluster.name").toString()
-							.trim().isEmpty()) {
+		if (this.elasticsearch_cred.containsKey("cluster.name")
+				&& !this.elasticsearch_cred.get("cluster.name").toString()
+						.trim().isEmpty()) {
 
-				this.client_settings = ImmutableSettings
-						.settingsBuilder()
-						.put("cluster.name",this.elasticsearch_cred.get("cluster.name").toString()).build();
-			} else {
-				this.client_settings = ImmutableSettings.settingsBuilder()
-						.put("cluster.name", "elasticsearch").build();
-			}
+			this.client_settings = ImmutableSettings
+					.settingsBuilder()
+					.put("cluster.name",
+							this.elasticsearch_cred.get("cluster.name")
+									.toString()).build();
+		} else {
+			this.client_settings = ImmutableSettings.settingsBuilder()
+					.put("cluster.name", "elasticsearch").build();
+		}
 
-			setElasticSearchClient(new TransportClient(this.client_settings));
-			getElasticSearchClient().addTransportAddress(
-					new InetSocketTransportAddress(this.elasticsearch_cred.get("host").toString(), Integer.parseInt(this.elasticsearch_cred.get("port").toString())));
+		setElasticSearchClient(new TransportClient(this.client_settings));
+		getElasticSearchClient().addTransportAddress(
+				new InetSocketTransportAddress(this.elasticsearch_cred.get(
+						"host").toString(), Integer
+						.parseInt(this.elasticsearch_cred.get("port")
+								.toString())));
 
 		return verifyConnection();
 	}
@@ -219,8 +235,8 @@ public class DataImporter {
 		}
 	}
 
-	private List<String> elasticsearch_search(String indexname, String typename,
-			String query_terms, int size) {
+	private List<String> elasticsearch_search(String indexname,
+			String typename, String query_terms, int size) {
 
 		List<String> response_list = new ArrayList<String>();
 

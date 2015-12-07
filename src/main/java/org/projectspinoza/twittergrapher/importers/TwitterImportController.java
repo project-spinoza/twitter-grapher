@@ -12,31 +12,33 @@ import org.openide.filesystems.FileUtil;
 //@ServiceProvider(service = ImportController.class)
 public class TwitterImportController extends ImportControllerImpl {
 	private static TwitterImportController twitterImportController = null;
-	
-	private TwitterImportController(){
+
+	private TwitterImportController() {
 		super();
 	}
-	
+
 	@Override
-    public Container importFile(File file) throws FileNotFoundException {
-        FileObject fileObject = FileUtil.toFileObject(file);
-        if (fileObject != null) {
-            //fileObject = getArchivedFile(fileObject);   //Unzip and return content file
-            //FileImporterBuilder builder = getMatchingImporter(fileObject);
-        	FileImporterBuilder builder = new ImporterBuilderTweet();
-            if (fileObject != null && builder != null) {
-                Container c = importFile(fileObject.getInputStream(), builder.buildImporter());
-                return c;
-            }
-        }
-        return null;
-    }
-    
-    public static synchronized TwitterImportController getInstance(){
-    	if(twitterImportController == null){
-    		twitterImportController = new TwitterImportController();
-    	}
-    	
-    	return twitterImportController;
-    }
+	public Container importFile(File file) throws FileNotFoundException {
+		FileObject fileObject = FileUtil.toFileObject(file);
+		if (fileObject != null) {
+			// fileObject = getArchivedFile(fileObject); //Unzip and return
+			// content file
+			// FileImporterBuilder builder = getMatchingImporter(fileObject);
+			FileImporterBuilder builder = new ImporterBuilderTweet();
+			if (fileObject != null && builder != null) {
+				Container c = importFile(fileObject.getInputStream(),
+						builder.buildImporter());
+				return c;
+			}
+		}
+		return null;
+	}
+
+	public static synchronized TwitterImportController getInstance() {
+		if (twitterImportController == null) {
+			twitterImportController = new TwitterImportController();
+		}
+
+		return twitterImportController;
+	}
 }

@@ -14,142 +14,144 @@ import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.impl.ImportContainerImpl;
 
 public class DataSourceImporter {
-    private ImportContainerImpl container;
+	private ImportContainerImpl container;
 
-
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public ImportContainerImpl importDataSource(Map<String, Object> settings) {
 
-    	List<String> tweets = null;  
+		List<String> tweets = null;
 		try {
-			tweets = new DataImporter((Map<String, Object>) settings.get("settings")).importDataList();
+			tweets = new DataImporter(
+					(Map<String, Object>) settings.get("settings"))
+					.importDataList();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-        container = new ImportContainerImpl();
-        for (String tweet : tweets) {
-            List<String[]> edges = buildEdges(tweet);
-            addToContainer(edges);
-        }
+		container = new ImportContainerImpl();
+		for (String tweet : tweets) {
+			List<String[]> edges = buildEdges(tweet);
+			addToContainer(edges);
+		}
 
-        return container;
-    }
-    
-    private void addToContainer(List<String[]> edges) {
+		return container;
+	}
 
-        for (String[] edge : edges) {
+	private void addToContainer(List<String[]> edges) {
 
-            EdgeDraft edgeDraft = null;
+		for (String[] edge : edges) {
 
-            String edgeId = edge[0] + "-" + edge[1];
+			EdgeDraft edgeDraft = null;
 
-            if (container.edgeExists(edgeId)) {
-                edgeDraft = container.getEdge(edgeId);
+			String edgeId = edge[0] + "-" + edge[1];
 
-                float weight = edgeDraft.getWeight();
-                weight += 1;
-                edgeDraft.setWeight(weight);
-                continue;
-            }
+			if (container.edgeExists(edgeId)) {
+				edgeDraft = container.getEdge(edgeId);
 
-            edgeDraft = container.factory().newEdgeDraft();
-            edgeDraft.setId(edgeId);
-            edgeDraft.setWeight(1f);
-            edgeDraft.setType(EdgeType.DIRECTED);
-            // edgeDraft.setType(EdgeType.UNDIRECTED);
-            edgeDraft.setLabel("CO_HASHTAG");
+				float weight = edgeDraft.getWeight();
+				weight += 1;
+				edgeDraft.setWeight(weight);
+				continue;
+			}
 
-            NodeDraft source = getOrCreateNodeDraft(edge[0], edge[0]);
-            NodeDraft target = getOrCreateNodeDraft(edge[1], edge[1]);
+			edgeDraft = container.factory().newEdgeDraft();
+			edgeDraft.setId(edgeId);
+			edgeDraft.setWeight(1f);
+			edgeDraft.setType(EdgeType.DIRECTED);
+			// edgeDraft.setType(EdgeType.UNDIRECTED);
+			edgeDraft.setLabel("CO_HASHTAG");
 
-            edgeDraft.setSource(source);
-            edgeDraft.setTarget(target);
+			NodeDraft source = getOrCreateNodeDraft(edge[0], edge[0]);
+			NodeDraft target = getOrCreateNodeDraft(edge[1], edge[1]);
 
-            container.addEdge(edgeDraft);
-        }
-    }
+			edgeDraft.setSource(source);
+			edgeDraft.setTarget(target);
 
-    /**
-     * creates or returns nodeDraft with the id @id and label @label
-     * 
-     * @param id
-     * @param label
-     * @return NodeDraft
-     */
-    private NodeDraft getOrCreateNodeDraft(String id, String label) {
+			container.addEdge(edgeDraft);
+		}
+	}
 
-        NodeDraft nodeDraft = null;
+	/**
+	 * creates or returns nodeDraft with the id @id and label @label
+	 * 
+	 * @param id
+	 * @param label
+	 * @return NodeDraft
+	 */
+	private NodeDraft getOrCreateNodeDraft(String id, String label) {
 
-        if (container.nodeExists(id)) {
-            nodeDraft = container.getNode(id);
-        } else {
-            nodeDraft = container.factory().newNodeDraft();
-            nodeDraft.setId(id);
-            nodeDraft.setLabel(label);
+		NodeDraft nodeDraft = null;
 
-            container.addNode(nodeDraft);
-        }
+		if (container.nodeExists(id)) {
+			nodeDraft = container.getNode(id);
+		} else {
+			nodeDraft = container.factory().newNodeDraft();
+			nodeDraft.setId(id);
+			nodeDraft.setLabel(label);
 
-        return nodeDraft;
-    }
-    private List<String[]> buildEdges(String tweet) {
+			container.addNode(nodeDraft);
+		}
 
-        List<String[]> edges = new ArrayList<String[]>();
+		return nodeDraft;
+	}
 
-        String parts[] = tweet.replaceAll("/[^A-Za-z0-9 #]/", " ")
-                .replace("\n", " ").replace("\r", " ")
-                .replaceAll("\\P{Print}", " ").split(" ");
+	private List<String[]> buildEdges(String tweet) {
 
-        Set<String> tags = new HashSet<String>();
+		List<String[]> edges = new ArrayList<String[]>();
 
-        for (String part : parts) {
+		String parts[] = tweet.replaceAll("/[^A-Za-z0-9 #]/", " ")
+				.replace("\n", " ").replace("\r", " ")
+				.replaceAll("\\P{Print}", " ").split(" ");
 
-            part = part.trim();
-            if (part.length() < 2)
-                continue;
-            if (part.equals("#rt"))
-                continue;
+		Set<String> tags = new HashSet<String>();
 
-            if (part.startsWith("#")) {
+		for (String part : parts) {
 
-                // . splits hashtags of type: #tag1#tag2...
-                if ((part.length() - part.replace("#", "").length()) > 1) {
-                    String[] subParts = part.split("#");
-                    for (String sb : subParts) {
-                        sb = sb.replaceAll("[^a-zA-Z0-9_-]", "").trim();
-                        sb = sb.replace("\\s", "");
-                        if (sb.length() > 1) {
-                            tags.add(sb);
-                        }
-                    }
+			part = part.trim();
+			if (part.length() < 2)
+				continue;
+			if (part.equals("#rt"))
+				continue;
 
-                    continue;
-                }
-                part = part.replaceAll("[^a-zA-Z0-9_-]", "").trim();
+			if (part.startsWith("#")) {
 
-                part = part.replace("\\s", "");
-                if (part.length() > 1) {
-                    tags.add(part);
-                }
-            }
-        }
+				// . splits hashtags of type: #tag1#tag2...
+				if ((part.length() - part.replace("#", "").length()) > 1) {
+					String[] subParts = part.split("#");
+					for (String sb : subParts) {
+						sb = sb.replaceAll("[^a-zA-Z0-9_-]", "").trim();
+						sb = sb.replace("\\s", "");
+						if (sb.length() > 1) {
+							tags.add(sb);
+						}
+					}
 
-        List<String> taglist = new ArrayList<String>();
-        taglist.addAll(tags);
-        Collections.sort(taglist);
-        if (taglist.size() < 2)
-            return edges;
+					continue;
+				}
+				part = part.replaceAll("[^a-zA-Z0-9_-]", "").trim();
 
-        for (int i = 0; i < taglist.size() - 1; i++) {
-            for (int j = i + 1; j < taglist.size(); j++) {
-                String edge[] = new String[2];
-                edge[0] = taglist.get(i);
-                edge[1] = taglist.get(j);
-                edges.add(edge);
-            }
-        }
+				part = part.replace("\\s", "");
+				if (part.length() > 1) {
+					tags.add(part);
+				}
+			}
+		}
 
-        return edges;
-    }
+		List<String> taglist = new ArrayList<String>();
+		taglist.addAll(tags);
+		Collections.sort(taglist);
+		if (taglist.size() < 2)
+			return edges;
+
+		for (int i = 0; i < taglist.size() - 1; i++) {
+			for (int j = i + 1; j < taglist.size(); j++) {
+				String edge[] = new String[2];
+				edge[0] = taglist.get(i);
+				edge[1] = taglist.get(j);
+				edges.add(edge);
+			}
+		}
+
+		return edges;
+	}
 }

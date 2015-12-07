@@ -47,7 +47,7 @@ public class Builder {
 		ProjectController pc = Lookup.getDefault().lookup(
 				ProjectController.class);
 		pc.newProject();
-		
+
 		Workspace workspace = pc.getCurrentWorkspace();
 
 		// Get models and controllers for this new workspace - will be useful
@@ -58,39 +58,43 @@ public class Builder {
 				.lookup(GraphController.class).getModel();
 		PreviewModel model = Lookup.getDefault()
 				.lookup(PreviewController.class).getModel();
-		 ImportController importController =
-		 Lookup.getDefault().lookup(ImportController.class);
-		//ImportController importController = TwitterImportController.getInstance();
+		ImportController importController = Lookup.getDefault().lookup(
+				ImportController.class);
+		// ImportController importController =
+		// TwitterImportController.getInstance();
 		FilterController filterController = Lookup.getDefault().lookup(
 				FilterController.class);
 		RankingController rankingController = Lookup.getDefault().lookup(
 				RankingController.class);
-		String coloumnValue=(String) settings.get("nsb");
+		String coloumnValue = (String) settings.get("nsb");
 		String coloumnvalue;
 		double range = 0.0;
 		int pagerankthreshhold = (Integer) settings.get("prt");
 		int nodecentrality = (Integer) settings.get("nct");
-		System.out.println("-------"+nodecentrality+"------");
+		System.out.println("-------" + nodecentrality + "------");
 		// System.out.println("Threshold of pagerrank"+pagerankthreshhold+"\n\n\n");
-		double Nodecentralitythreshhold = (double) nodecentrality/100;
+		double Nodecentralitythreshhold = (double) nodecentrality / 100;
 		double prthreshhold = (double) pagerankthreshhold / 100;
-		String columnValue="";
-		
-		//Getting layout Options
+		String columnValue = "";
+
+		// Getting layout Options
 		JsonObject jobject = new JsonObject(settings.get("la").toString());
-		Map inner=jobject.getMap();
+		Map inner = jobject.getMap();
 
 		// Import file
 		Container container;
-		try {										 
-			if(DataSourceType.contains(((Map<String,Object>)settings.get("settings")).get("source_selected").toString())){
-				container = (new DataSourceImporter()).importDataSource(settings);
-			}else{
-			    File file = new File(settings.get("input_file").toString());
-			    container = importController.importFile(file);
+		try {
+			if (DataSourceType.contains(((Map<String, Object>) settings
+					.get("settings")).get("source_selected").toString())) {
+				container = (new DataSourceImporter())
+						.importDataSource(settings);
+			} else {
+				File file = new File(settings.get("input_file").toString());
+				container = importController.importFile(file);
 			}
-			//container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED); // Force
-																		// DIRECTED
+			// container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED); //
+			// Force
+			// DIRECTED
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return null;
@@ -103,7 +107,7 @@ public class Builder {
 		// DirectedGraph graph = graphModel.getDirectedGraph();
 		Graph graph = IS_DIRECTED ? graphModel.getDirectedGraph() : graphModel
 				.getUndirectedGraph();
-		
+
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Calculating AND Filtering Based On PageRank
@@ -132,35 +136,34 @@ public class Builder {
 
 		coloumnvalue = "pageranks";
 		range = 0.011;
-		GraphView view = Filters.FilterBasedOnRange(attributeModel, coloumnvalue,
-				range);
+		GraphView view = Filters.FilterBasedOnRange(attributeModel,
+				coloumnvalue, range);
 		graphModel.setVisibleView(view);
 		graph = graphModel.getDirectedGraphVisible();
 		int loop = 0;
 		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
+
 		// Create a attribute range filter query - on the NeighborCount column
 		// Execute the filter query
-		
+
 		coloumnvalue = "NeighborCount";
 		range = 2.0;
-		GraphView view1 = Filters.FilterBasedOnRange(attributeModel, coloumnvalue,
-				range);
+		GraphView view1 = Filters.FilterBasedOnRange(attributeModel,
+				coloumnvalue, range);
 		graphModel.setVisibleView(view1);
 		graph = graphModel.getDirectedGraphVisible();
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Degree Range Filter
-		
-		 GraphView view2 =Filters.degreerangefilter(graph); 
-		 graphModel.setVisibleView(view); 
+		// Degree Range Filter
 
-		 // See visible graph stats
-		
-		 UndirectedGraph graphVisible = graphModel.getUndirectedGraphVisible(); 
-		 System.out.println("\n\nNodes: " + graphVisible.getNodeCount()); 
-		 System.out.println("Edges: " + graphVisible.getEdgeCount());
-		
+		GraphView view2 = Filters.degreerangefilter(graph);
+		graphModel.setVisibleView(view);
+
+		// See visible graph stats
+
+		UndirectedGraph graphVisible = graphModel.getUndirectedGraphVisible();
+		System.out.println("\n\nNodes: " + graphVisible.getNodeCount());
+		System.out.println("Edges: " + graphVisible.getEdgeCount());
 
 		// . cluster coloring...
 		ChineseWhispersClusterer cwc = new ChineseWhispersClusterer();
@@ -168,104 +171,114 @@ public class Builder {
 
 		// Run YifanHuLayout for 100 passes - The layout always takes the
 		// current visible view
-		int iterations = inner.containsKey("it") ? Integer.parseInt(inner.get("it").toString()) : 50;
-		if(inner.get("name").toString().equals("YifanHuLayout")){
-		
+		int iterations = inner.containsKey("it") ? Integer.parseInt(inner.get(
+				"it").toString()) : 50;
+		if (inner.get("name").toString().equals("YifanHuLayout")) {
+
 			System.out.println("\nEntered YifanHuLayout \n");
-		YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
-		layout.setGraphModel(graphModel);
-		layout.resetPropertiesValues();
-		int distanceInt = inner.containsKey("distance") ? Integer.parseInt(inner.get("distance").toString()) : 200;
-		float distance = (float) distanceInt;
-		layout.setOptimalDistance(distance);
-
-		layout.initAlgo();
-		for (int i = 0; i < iterations && layout.canAlgo(); i++) {
-			layout.goAlgo();
-		}
-		layout.endAlgo();
-
-		}
-		else if(inner.get("name").toString().equals("ForceAtlasLayout")){
-			System.out.println("\nEntered ForceAtlasLayout \n"); 
-			ForceAtlasLayout layout = new ForceAtlasLayout(null);
-			   layout.setGraphModel(graphModel);
-			   layout.resetPropertiesValues();
-			   
-			   int speedInt = inner.containsKey("speed") ? Integer.parseInt(inner.get("speed").toString()) : 100;
-			   int convergedInt = inner.containsKey("converged") ? Integer.parseInt(inner.get("converged").toString()) : 1;
-			   double inertia = inner.containsKey("inertia") ? Double.parseDouble(inner.get("inertia").toString()) : 0.1 ;
-			   int gravityInt = inner.containsKey("gravity") ? Integer.parseInt(inner.get("gravity").toString()) : 50;
-			   int maxDisplacementInt = inner.containsKey("maxdisplacement") ? Integer.parseInt(inner.get("maxdisplacement").toString()) : 50;
-			   double speed = (double) speedInt;
-			   boolean converged = convergedInt == 1 ? true : false;
-			   double gravity = (double) gravityInt;
-			   double maxDisplacement = (double) maxDisplacementInt;
-			   
-			   layout.setSpeed(speed);
-			   layout.setConverged(converged);
-			   //layout.inertia =0.1;
-			   //layout.setRepulsionStrength(400.0);
-			   layout.setInertia(inertia);
-			   layout.setGravity(gravity);
-			   layout.setMaxDisplacement(maxDisplacement);
-			   
-			   layout.initAlgo();
-			   for (int i = 0; i < iterations && layout.canAlgo(); i++) {
-			    layout.goAlgo();
-			   }
-			   
-			   layout.endAlgo();
-		}
-		
-		else if(inner.get("name").toString().equals("FruchtermanReingold")){
-			System.out.println("\nEntered FruchtermanReingold \n");
-			FruchtermanReingold layout = new FruchtermanReingold(null);
+			YifanHuLayout layout = new YifanHuLayout(null,
+					new StepDisplacement(1f));
 			layout.setGraphModel(graphModel);
 			layout.resetPropertiesValues();
-			
-			int areaInt = inner.containsKey("area") ? Integer.parseInt(inner.get("area").toString()) : 100;
-			int speedInt = inner.containsKey("speed") ? Integer.parseInt(inner.get("speed").toString()) : 50;
-			int gravityInt = inner.containsKey("gravity") ? Integer.parseInt(inner.get("gravity").toString()) : 0;
-			float area = (float) areaInt;
-			double speed = (double) speedInt;
-			double gravity = (double) gravityInt;
-			
-			layout.setArea(area);
-			layout.setSpeed(speed);
-			layout.setGravity(gravity);
-			
+			int distanceInt = inner.containsKey("distance") ? Integer
+					.parseInt(inner.get("distance").toString()) : 200;
+			float distance = (float) distanceInt;
+			layout.setOptimalDistance(distance);
+
 			layout.initAlgo();
 			for (int i = 0; i < iterations && layout.canAlgo(); i++) {
 				layout.goAlgo();
 			}
 			layout.endAlgo();
-			
-			
+
+		} else if (inner.get("name").toString().equals("ForceAtlasLayout")) {
+			System.out.println("\nEntered ForceAtlasLayout \n");
+			ForceAtlasLayout layout = new ForceAtlasLayout(null);
+			layout.setGraphModel(graphModel);
+			layout.resetPropertiesValues();
+
+			int speedInt = inner.containsKey("speed") ? Integer.parseInt(inner
+					.get("speed").toString()) : 100;
+			int convergedInt = inner.containsKey("converged") ? Integer
+					.parseInt(inner.get("converged").toString()) : 1;
+			double inertia = inner.containsKey("inertia") ? Double
+					.parseDouble(inner.get("inertia").toString()) : 0.1;
+			int gravityInt = inner.containsKey("gravity") ? Integer
+					.parseInt(inner.get("gravity").toString()) : 50;
+			int maxDisplacementInt = inner.containsKey("maxdisplacement") ? Integer
+					.parseInt(inner.get("maxdisplacement").toString()) : 50;
+			double speed = (double) speedInt;
+			boolean converged = convergedInt == 1 ? true : false;
+			double gravity = (double) gravityInt;
+			double maxDisplacement = (double) maxDisplacementInt;
+
+			layout.setSpeed(speed);
+			layout.setConverged(converged);
+			// layout.inertia =0.1;
+			// layout.setRepulsionStrength(400.0);
+			layout.setInertia(inertia);
+			layout.setGravity(gravity);
+			layout.setMaxDisplacement(maxDisplacement);
+
+			layout.initAlgo();
+			for (int i = 0; i < iterations && layout.canAlgo(); i++) {
+				layout.goAlgo();
+			}
+
+			layout.endAlgo();
 		}
-		
+
+		else if (inner.get("name").toString().equals("FruchtermanReingold")) {
+			System.out.println("\nEntered FruchtermanReingold \n");
+			FruchtermanReingold layout = new FruchtermanReingold(null);
+			layout.setGraphModel(graphModel);
+			layout.resetPropertiesValues();
+
+			int areaInt = inner.containsKey("area") ? Integer.parseInt(inner
+					.get("area").toString()) : 100;
+			int speedInt = inner.containsKey("speed") ? Integer.parseInt(inner
+					.get("speed").toString()) : 50;
+			int gravityInt = inner.containsKey("gravity") ? Integer
+					.parseInt(inner.get("gravity").toString()) : 0;
+			float area = (float) areaInt;
+			double speed = (double) speedInt;
+			double gravity = (double) gravityInt;
+
+			layout.setArea(area);
+			layout.setSpeed(speed);
+			layout.setGravity(gravity);
+
+			layout.initAlgo();
+			for (int i = 0; i < iterations && layout.canAlgo(); i++) {
+				layout.goAlgo();
+			}
+			layout.endAlgo();
+
+		}
+
 		// Get Centrality
 		GraphDistance distance = new GraphDistance();
 		distance.setDirected(true);
 		distance.execute(graphModel, attributeModel);
-		
-		
-		// Sorting Nodes based On some column Value and Removing Percentage Nodes Based On Column Value
-				if(pagerankthreshhold!=0){
-					columnValue="pageranks";
-				AttributeColumn column = attributeModel.getNodeTable().getColumn(
-						columnValue);
-				graph = Filters.RemovePercentageNodes(graph, column, prthreshhold,columnValue);
-				
+
+		// Sorting Nodes based On some column Value and Removing Percentage
+		// Nodes Based On Column Value
+		if (pagerankthreshhold != 0) {
+			columnValue = "pageranks";
+			AttributeColumn column = attributeModel.getNodeTable().getColumn(
+					columnValue);
+			graph = Filters.RemovePercentageNodes(graph, column, prthreshhold,
+					columnValue);
+
 		}
-				if(nodecentrality!=0){
-					columnValue="Betweenness Centrality";
-					AttributeColumn column = attributeModel.getNodeTable().getColumn(
-							GraphDistance.BETWEENNESS);
-					graph = Filters.RemovePercentageNodes(graph, column, Nodecentralitythreshhold,columnValue);
-					
-			}
-				
+		if (nodecentrality != 0) {
+			columnValue = "Betweenness Centrality";
+			AttributeColumn column = attributeModel.getNodeTable().getColumn(
+					GraphDistance.BETWEENNESS);
+			graph = Filters.RemovePercentageNodes(graph, column,
+					Nodecentralitythreshhold, columnValue);
+
+		}
 
 		// Rank color by Degree
 		Ranking degreeRanking = rankingController.getModel().getRanking(
@@ -278,28 +291,27 @@ public class Builder {
 		rankingController.transform(degreeRanking, colorTransformer);
 
 		// Rank Size By Page Rank Or Node Centrality
-		if(coloumnValue.contains("nc")){
-		
+		if (coloumnValue.contains("nc")) {
+
 			System.out.println("\n Node Size By Node Centrality \n");
-			Filters.RankSize("Betweenness Centrality", attributeModel, rankingController);
-		}
-		else if(coloumnValue.contains("pr")){
+			Filters.RankSize("Betweenness Centrality", attributeModel,
+					rankingController);
+		} else if (coloumnValue.contains("pr")) {
 			System.out.println("\n Node Size By Page Rank \n");
 			Filters.RankSize("pageranks", attributeModel, rankingController);
 		}
-		
-		
-		
+
 		// Preview
 		model.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS,
 				Boolean.TRUE);
 		// model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new
 		// EdgeColor(Color.GRAY));
-		 model.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 100f);
-		 
+		model.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 100f);
+
 		model.getProperties().putValue(PreviewProperty.EDGE_THICKNESS,
 				new Float(0.5f));
-		model.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.TRUE);
+		model.getProperties().putValue(PreviewProperty.EDGE_CURVED,
+				Boolean.TRUE);
 		model.getProperties().putValue(
 				PreviewProperty.NODE_LABEL_FONT,
 				model.getProperties()

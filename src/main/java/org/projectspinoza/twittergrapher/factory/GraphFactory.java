@@ -8,24 +8,24 @@ import org.projectspinoza.twittergrapher.graph.SigmaGraph;
 import org.projectspinoza.twittergrapher.graph.TwitterGraph;
 
 public class GraphFactory {
-	
-	public TwitterGraph getGraph(String graphType, Map<String, Object> settings){
+
+	public TwitterGraph getGraph(String graphType, Map<String, Object> settings) {
 		boolean DIRECTED = true;
 		Graph gephiGraph = Builder.build(DIRECTED, settings);
-		
+
 		TwitterGraph graph;
-		
-		switch(graphType){
-		
-		case "sigmaGraph" :
-				graph = new SigmaGraph();
-				graph.build(gephiGraph, settings);
+
+		switch (graphType) {
+
+		case "sigmaGraph":
+			graph = new SigmaGraph();
+			graph.build(gephiGraph, settings);
 			break;
-			
-			default:
-				graph = null;
+
+		default:
+			graph = null;
 		}
-		
+
 		return graph;
 	}
 }
