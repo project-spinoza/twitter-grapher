@@ -181,12 +181,21 @@ public class DataImporter {
 
 		List<String> response_list = new ArrayList<String>();
 		BufferedReader reader = null;
-
-		try {
+		String[] search_keywords = this.query_str.split("\\s");
+ 		try {
 			reader = new BufferedReader(new FileReader(new File(input_file)));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				response_list.add(new JsonObject(line).getString("text"));
+				String tweet_text = new JsonObject(line).getString("text");
+				boolean contains_keyword = false;
+				for (String keyword : search_keywords) {
+					if(tweet_text.contains(keyword)){
+						contains_keyword = true;
+					}
+				}
+				if (contains_keyword){
+					response_list.add(tweet_text);
+				}
 			}
 		} catch (IOException e) {
 			System.out.println("File not exists or error reading file.!");

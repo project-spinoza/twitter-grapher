@@ -18,9 +18,7 @@ public class TwitterGrapher {
 		commandLineArguments[0] = "run";
 		commandLineArguments[1] = VERTICLE_CLASS;
 		for (int i = 0; i < args.length; i++) {
-
 			commandLineArguments[i + 2] = args[i];
-
 		}
 		return commandLineArguments;
 	}

@@ -31,17 +31,11 @@ public class GraphServer extends AbstractVerticle {
 
 		// extracting data_sources
 		JsonObject data_sources_cred = config.getJsonObject("data_sources");
-		// final JsonObject elasticsearch_cred_json =
-		// data_sources.getJsonObject("elasticsearch");
-
 		Map<String, Object> settings = config.getMap();
 		JsonObject lso = (JsonObject) settings.get("layout_settings");
 		Map<String, Object> layout_settings = lso.getMap();
-		// String bk_color = layout_settings.get("bk_color").toString();
 		JsonObject app_settings = (JsonObject) settings.get("app_settings");
-		// Map<String, Object> app_settings_map = app_settings.getMap();
 		JsonObject graph_settings = (JsonObject) settings.get("graph_settings");
-		// Map<String, Object> gs = graph_settings.getMap();
 		final Map<String, Object> sources_settings = new HashMap<String, Object>();
 
 		layout_settings.put("input_file", app_settings.getString("input_file"));
@@ -62,7 +56,6 @@ public class GraphServer extends AbstractVerticle {
 				.method(HttpMethod.GET)
 				.handler(
 						ctx -> {
-
 							ctx.put("color", layout_settings.get("bk_color")
 									.toString());
 							ctx.put("welcome", "Hi there!");
