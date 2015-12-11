@@ -7,9 +7,8 @@ public class TwitterGrapher {
     public static String search_value = null;
 
     public static void main(String[] args) {
-        args = (args.length > 1 && args[0].equals("run")) ? args
-                : getCommandLineArguments(args);
-
+        args = (args.length > 1 && args[0].equals("run")) ? 
+                args : getCommandLineArguments(args);
         Starter.main(args);
     }
 
