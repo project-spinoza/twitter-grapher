@@ -3,24 +3,24 @@ package org.projectspinoza.twittergrapher;
 import io.vertx.core.Starter;
 
 public class TwitterGrapher {
-	private static final String VERTICLE_CLASS = "org.projectspinoza.twittergrapher.GraphServer";
-	public static String search_value = null;
+    private static final String VERTICLE_CLASS = "org.projectspinoza.twittergrapher.GraphServer";
+    public static String search_value = null;
 
-	public static void main(String[] args) {
-		args = (args.length > 1 && args[0].equals("run")) ? args
-				: getCommandLineArguments(args);
+    public static void main(String[] args) {
+        args = (args.length > 1 && args[0].equals("run")) ? args
+                : getCommandLineArguments(args);
 
-		Starter.main(args);
-	}
+        Starter.main(args);
+    }
 
-	public static String[] getCommandLineArguments(String[] args) {
-		String[] commandLineArguments = new String[args.length + 2];
-		commandLineArguments[0] = "run";
-		commandLineArguments[1] = VERTICLE_CLASS;
-		for (int i = 0; i < args.length; i++) {
-			commandLineArguments[i + 2] = args[i];
-		}
-		return commandLineArguments;
-	}
+    public static String[] getCommandLineArguments(String[] args) {
+        String[] commandLineArguments = new String[args.length + 2];
+        commandLineArguments[0] = "run";
+        commandLineArguments[1] = VERTICLE_CLASS;
+        for (int i = 0; i < args.length; i++) {
+            commandLineArguments[i + 2] = args[i];
+        }
+        return commandLineArguments;
+    }
 
 }
