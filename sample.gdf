@@ -1,0 +1,14 @@
+nodedef> name,label
+me,"Joe Blow"
+friend_1,"Jane Doe"
+friend_2,Homer Jay Simpson"
+friend_3,"Philip J. Fry"
+friend_4,"Sheldon Lee Cooper"
+edgedef> node1,node2,weight
+me,friend_1,1.1
+me,friend_2,7.4
+me,friend_3,100.0003
+me,friend_4,3.14159265358979323846264338327950
+friend_1,friend_2,33.3
+friend_1,friend_3,0.000001
+friend_2,friend_3,12.345
