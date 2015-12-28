@@ -116,14 +116,24 @@
 						<span class="no-label">Nodecentrality</span><input type="hidden" class="slider-input nodecentrality" value="0"  />
 					</div>
 				</fieldset>
-				<div class="message">No data available for given terms.</div>
+				
 				<div class="load-container">
 					<img id="loader_img" src="images/load.gif"/>
 				</div>
+				<div id="msg-container">
+
+					<div class="message">No data available for given terms.</div>
+				<span id="onflychangesapply">
+				 <input type="checkbox" name="onFlyChanges" id="onFlyChanges"> Apply changes Runtime </input>
+				 </span>
+				</div>
+
 				<a href="#" id="clickbtn">Submit</a>
 			</fieldset>
 		</form>
+		<div class="submitQueryFormShowHideDiv">
 		<a href="#" id="submitQueryFormShowHide"><img src="images/arrow-up.png" title="Show/Hide Search Panel"/></a>
+		</div>
 		<div id="nodeInfoPanel">
 			<div id="nodeInfo">
 				<h3>Node Info:</h3>

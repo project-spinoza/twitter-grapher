@@ -5,19 +5,24 @@ body{
 }
 #clickbtn{
   float: right;
-  margin-right: 28px;
+  margin-right: 18px;
   margin-top: 2px;
   width: 42px;
   padding: 10px 20px 10px 20px;
   background-color: #FFA800;
 }
+#msg-container {
+  display: block;
+  float: left;
+  width: 800px;
+}
 .message{
   color: red;
   display: none;
-  float: left;
+  float: right;
   padding-top: 10px;
   text-align: center;
-  width: 1165px;
+  width: 312px;
 }
 #options {
   text-align: center;
@@ -68,6 +73,7 @@ a {
   float: left;
   width: 600px;
 }
+
 .slider-fieldset{
   float: left;
   margin: 10px;
@@ -130,6 +136,9 @@ a {
 .main-fieldset .slider-container .scale ins {
   font-size:15px;
 }
+.main-fieldset {
+  padding-left: 19px !important;
+}
 .slider-container{
   margin:0 auto;
 }
@@ -160,13 +169,18 @@ a {
   line-height: 20px;
 }
 
-#submitQueryFormShowHide {
+#submitQueryFormShowHide, .submitQueryFormShowHideDiv {
   width: 30px;
   display: block;
   float: right;
   padding-top: 2px;
   margin: 0;
   line-height: 20px;
+}
+
+.submitQueryFormShowHideDiv {
+  width: 100px;
+
 }
 
 #submitQueryFormShowHide {
@@ -178,6 +192,10 @@ a {
   margin: 0;
   line-height: 20px;
 }
+/*button {
+  display: inline-block;
+  float: left;
+}*/
 
 div#nodeInfo h3{
   min-width: 170px;
@@ -190,6 +208,14 @@ div#nodeInfo h3{
 }
 #nodeInfoTable {
   width: 100%;
+}
+#onflychangesapply {
+  color: #fff;
+  font-weight: normal;
+
+}
+#onflychangesapply input {
+  margin-left: 9px;
 }
 
 /******************************* CSS for chrome only ********************************/

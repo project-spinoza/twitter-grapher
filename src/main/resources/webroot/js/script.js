@@ -1,6 +1,14 @@
 $(document).ready(function(){
 
-  var isPostProcessing = false;
+var isPostProcessing = false;
+var nodesCount = 0;
+
+
+// $('.slider-container').on('click', function(){
+
+// alert('pasa marha');
+
+// });
 
 var queryPanelDisplayed = true;
 $( "#submitQueryFormShowHide" ).click(function() {
@@ -69,8 +77,10 @@ $('.nodecentrality,.pagerank,.neighborcount').jRange({
 		width: 300,
 		snap : true,
     ondragend: function() {
-      isPostProcessing = true;
-      $('#clickbtn').trigger("click");
+      if ($('#onFlyChanges').is(":checked") && nodesCount > 0) {
+              isPostProcessing = true;
+             $('#clickbtn').trigger("click");
+      }
     }
 });
   
@@ -152,6 +162,7 @@ $('#clickbtn').click(function(event) {
           	  $(".message").css("display","block");
           	  $("#container").empty();
            }
+           nodesCount = nodesObject.nodes.nodes.length;
            if(nodesObject.nodes.nodes.length > 0){
       	      $(".message").css("display","none");
       	      showGraph(nodesObject.nodes, document.getElementById('container'), Gsetting);
