@@ -1,6 +1,6 @@
 # Twitter Grapher
 The purpose of this project is to allow a user to visualize large set of data from multiple data sources.<br/><br/>
-![WordCrowd screenshot](images/1.jpg)  <br/><br/><br/>
+![WordCrowd screenshot](images/main.jpg)  <br/><br/><br/>
 ![WordCrowd screenshot](images/twitter-grapher1.jpg)  <br/><br/><br/>
 ![WordCrowd screenshot](images/twitter-grapher.jpg)  <br/>
 # Installation
