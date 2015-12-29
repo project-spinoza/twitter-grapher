@@ -20,7 +20,11 @@ import org.projectspinoza.twittergrapher.factory.GraphFactory;
 import org.projectspinoza.twittergrapher.graph.TwitterGraph;
 
 public class GraphServer {
-
+	
+	private enum GraphProcessID {
+		GENERATE_GRAPH,
+		POST_PROCESS_GRAPH
+	}
 	private JsonObject graph_config_json;
 	private Vertx vertx;
 	private HttpServer server;
@@ -72,12 +76,11 @@ public class GraphServer {
 		});
 
 		router.getWithRegex("/ajax.*").method(HttpMethod.GET).handler(routingContext -> {
-			ajaxResponseHandler(routingContext,1);
+			ajaxResponseHandler(routingContext,GraphProcessID.GENERATE_GRAPH);
 		});
 		
 		router.getWithRegex("/processGraph.*").method(HttpMethod.GET).handler(routingContext -> {
-			System.out.println("acquired");
-			ajaxResponseHandler(routingContext,0);
+			ajaxResponseHandler(routingContext,GraphProcessID.POST_PROCESS_GRAPH);
 		});
 
 		// deploy app server on requested port
@@ -114,7 +117,7 @@ public class GraphServer {
 		});
 	}
 
-	private void ajaxResponseHandler(RoutingContext routingContext, int postProcessing) {
+	private void ajaxResponseHandler(RoutingContext routingContext, GraphProcessID postProcessing) {
 		
 		MultiMap parameters = routingContext.request().params();
 		Map<String, Object> sources_settings = new HashMap<String, Object>();
@@ -165,7 +168,7 @@ public class GraphServer {
 		
 		sources_settings.put("source_selected", data_source);
 		
-		if (postProcessing == 0 && Main.searchValues != null){
+		if (postProcessing == GraphProcessID.POST_PROCESS_GRAPH && Main.searchValues != null){
 			sources_settings.put("query_str", Main.searchValues.toString());
 		}else {
 			sources_settings.put("query_str", parameters.get("searchField").toString());

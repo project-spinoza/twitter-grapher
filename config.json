@@ -1,17 +1,9 @@
 {
     "app_settings": {
-        "getdata": "file",
-        "input_file": "tweetfile.tweet",
         "host": "127.0.0.1",
         "port": 8080
     },
     "layout_settings": {
-        "limit": 5000,
-        "ES_SERVER_IP": "52.4.65.24",
-        "sentiment": "null",
-        "sampleSize": 5000,
-        "samplingRatio": 75,
-        "estimatedTime": 500,
         "nct": 0,
         "prt": 0,
 		"neighborcountrange":0,
@@ -24,16 +16,6 @@
         "nsb": "pr",
         "ecb": "mix",
         "et": "curve",
-        "fieldName": "text",
-        "typeName": "tweets",
-        "indexName": "twitter_stemmer3",
-        "returnField": "text",
-        "searchBy": "tweets",
-        "ips": {
-            "hosts": [
-                "localhost"
-            ]
-        },
         "bk_color": "#000"
     },
     "graph_settings": {

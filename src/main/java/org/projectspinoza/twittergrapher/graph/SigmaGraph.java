@@ -28,28 +28,23 @@ public class SigmaGraph implements TwitterGraph {
 
 	@Override
 	public void build(Graph graph, Map<String, Object> settings) {
-		// TODO Auto-generated method stub
 		createNodes(graph, settings);
 		createEdges(graph, settings);
 	}
 
 	public HashSet<GraphElement> getNodes() {
-		// TODO Auto-generated method stub
 		return sigmaNodes;
 	}
 
 	public HashSet<GraphElement> getEdges() {
-		// TODO Auto-generated method stub
 		return sigmaEdges;
 	}
 
 	public int nodeCount() {
-		// TODO Auto-generated method stub
 		return sigmaNodes.size();
 	}
 
 	public int edgeCount() {
-		// TODO Auto-generated method stub
 		return sigmaEdges.size();
 	}
 
@@ -163,11 +158,6 @@ public class SigmaGraph implements TwitterGraph {
 				}
 				sigmaEdge.setColor(color);
 			}
-
-			/*
-			 * if(lc.get("et").toString().equals("curve")){
-			 * jEdge.setType("curve"); }
-			 */
 			sigmaEdges.add(sigmaEdge);
 		}
 	}
