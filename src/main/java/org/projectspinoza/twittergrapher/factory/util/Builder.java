@@ -17,10 +17,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
-import org.gephi.layout.plugin.force.StepDisplacement;
-import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
-import org.gephi.layout.plugin.forceAtlas.ForceAtlasLayout;
-import org.gephi.layout.plugin.fruchterman.FruchtermanReingold;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperty;
@@ -41,6 +37,7 @@ public class Builder {
 
 	@SuppressWarnings("unchecked")
 	public static Graph build(boolean IS_DIRECTED, Map<String, Object> settings) {
+		
 		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 		pc.newProject();
 		Workspace workspace = pc.getCurrentWorkspace();
@@ -65,25 +62,25 @@ public class Builder {
 		double prthreshhold = (double) pagerankthreshhold / 100;
 	
 		// Getting layout Options
-		JsonObject jobject = new JsonObject(settings.get("la").toString());
-		Map<String, Object> inner = jobject.getMap();
-		JsonObject sources_cred_json = (JsonObject) ((Map<String, Object>) settings.get("settings")).get("sources_cred");
-		String input_file = sources_cred_json.getString("file");
-		String data_source = ((Map<String, Object>) settings.get("settings")).get("source_selected").toString();
+		JsonObject layoutAlgoJson = new JsonObject(settings.get("la").toString());
+		Map<String, Object> layoutSettings = layoutAlgoJson.getMap();
+		JsonObject sourcesCredJson = (JsonObject) ((Map<String, Object>) settings.get("settings")).get("sources_cred");
+		String inputFile = sourcesCredJson.getString("file");
+		String dataSource = ((Map<String, Object>) settings.get("settings")).get("source_selected").toString();
 		
 		// Import file
 		Container container = null;
 		try{
-			if (DataSourceType.contains(data_source)) {
+			if (DataSourceType.contains(dataSource)) {
 				container = (new DataSourceImporter()).importDataSource(settings);
 				if (container == null){
-					System.out.println("Error generating graph from "+input_file);
+					System.out.println("Error generating graph from "+inputFile);
 				}
-			} else if (data_source.equals("graphfile")){
-				File file = new File(input_file);
+			} else if (dataSource.equals("graphfile")){
+				File file = new File(inputFile);
 				container = importController.importFile(file);
 				if (container == null){
-					System.out.println("No graph found in "+input_file+". Make sure you are using correct graph file format.");
+					System.out.println("No graph found in "+inputFile+". Make sure you are using correct graph file format.");
 				}
 			}else {
 				System.out.println ("Unsupported file format.");
@@ -99,17 +96,16 @@ public class Builder {
 		importController.process(container, new DefaultProcessor(), workspace);
 		Graph graph = getgraph(graphModel,IS_DIRECTED,getgraph); 
 		calculatePageRank(graphModel, attributeModel, pr, IS_DIRECTED, epsilon, probability);
-		addingcolumntoattributemodel(columnname, attributeModel,graph);
+		addingcolumntoattributemodel(graph , attributeModel, columnname);
 		ChineseWhispersClusterer cwc = new ChineseWhispersClusterer();
 		cwc.execute(graphModel);
 
 		// Run Layout for 100 passes - The layout always takes the
-		int iterations = inner.containsKey("it") ? Integer.parseInt(inner.get("it").toString()) : 50;
-		setLayouts(inner, graphModel, iterations);
+		int iterations = layoutSettings.containsKey("it") ? Integer.parseInt(layoutSettings.get("it").toString()) : 50;
+		setLayouts(graphModel, layoutSettings, iterations);
 		
-		// Get Centrality
 		GraphDistance distance = new GraphDistance();
-		getcentrality(distance, attributeModel, graphModel, true);
+		getcentrality(graphModel, attributeModel, distance , true);
 
 		// Sorting Nodes based On some column Value and Removing Percentage
 		// Nodes Based On Column Value
@@ -162,7 +158,7 @@ public class Builder {
 		pr.execute(graphModel, attributeModel);
 	}
 	
-	public static void addingcolumntoattributemodel(String columnname, AttributeModel attributeModel, Graph graph){
+	public static void addingcolumntoattributemodel(Graph graph, AttributeModel attributeModel, String columnname){
 		attributeModel.getNodeTable().addColumn(columnname,AttributeType.DOUBLE);
 		Node[] node1 = graph.getNodes().toArray();
 		double neighborcount = 0.0;
@@ -173,10 +169,9 @@ public class Builder {
 		}
 	}
 	
-	public static void getcentrality(GraphDistance distance , AttributeModel attributeModel, GraphModel graphModel, Boolean bool){
+	public static void getcentrality(GraphModel graphModel,  AttributeModel attributeModel, GraphDistance distance , Boolean bool){
 		distance.setDirected(bool);
 		distance.execute(graphModel, attributeModel);
-
 	}
 	
 	public static void getpreview(PreviewModel model){
@@ -187,74 +182,20 @@ public class Builder {
 		model.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT,model.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(8));
 	}
 	
-	public static void setLayouts(Map<String, Object> inner, GraphModel graphModel, int iterations){
-		if (inner.get("name").toString().equals("YifanHuLayout")) {
+	public static void setLayouts(GraphModel graphModel, Map<String, Object> layoutSettings, int iterations){
+		
+		if (layoutSettings.get("name").toString().equals("YifanHuLayout")) {
+			
 			System.out.println("\nLayout: YifanHuLayout");
-			YifanHuLayout layout = new YifanHuLayout(null,new StepDisplacement(1f));
-			layout.setGraphModel(graphModel);
-			layout.resetPropertiesValues();
-			int distanceInt = inner.containsKey("distance") ? Integer.parseInt(inner.get("distance").toString()) : 200;
-			float distance = (float) distanceInt;
-			layout.setOptimalDistance(distance);
-
-			layout.initAlgo();
-			for (int i = 0; i < iterations && layout.canAlgo(); i++) {
-				layout.goAlgo();
-			}
-			layout.endAlgo();
-		} else if (inner.get("name").toString().equals("ForceAtlasLayout")) {
+			Layouts.YifanHuLayout(graphModel, layoutSettings, iterations);
+		} else if (layoutSettings.get("name").toString().equals("ForceAtlasLayout")) {
+			
 			System.out.println("\nLayout: ForceAtlasLayout");
-			ForceAtlasLayout layout = new ForceAtlasLayout(null);
-			layout.setGraphModel(graphModel);
-			layout.resetPropertiesValues();
-
-			int speedInt = inner.containsKey("speed") ? Integer.parseInt(inner.get("speed").toString()) : 100;
-			int convergedInt = inner.containsKey("converged") ? Integer.parseInt(inner.get("converged").toString()) : 1;
-			double inertia = inner.containsKey("inertia") ? Double.parseDouble(inner.get("inertia").toString()) : 0.1;
-			int gravityInt = inner.containsKey("gravity") ? Integer.parseInt(inner.get("gravity").toString()) : 50;
-			int maxDisplacementInt = inner.containsKey("maxdisplacement") ? Integer.parseInt(inner.get("maxdisplacement").toString()) : 50;
-			double speed = (double) speedInt;
-			boolean converged = convergedInt == 1 ? true : false;
-			double gravity = (double) gravityInt;
-			double maxDisplacement = (double) maxDisplacementInt;
-
-			layout.setSpeed(speed);
-			layout.setConverged(converged);
-			layout.setInertia(inertia);
-			layout.setGravity(gravity);
-			layout.setMaxDisplacement(maxDisplacement);
-
-			layout.initAlgo();
-			for (int i = 0; i < iterations && layout.canAlgo(); i++) {
-				layout.goAlgo();
-			}
-
-			layout.endAlgo();
-		}
-
-		else if (inner.get("name").toString().equals("FruchtermanReingold")) {
+			Layouts.ForceAtlasLayout(graphModel, layoutSettings, iterations);
+		} else if (layoutSettings.get("name").toString().equals("FruchtermanReingold")) {
+			
 			System.out.println("\nLayout: FruchtermanReingold");
-			FruchtermanReingold layout = new FruchtermanReingold(null);
-			layout.setGraphModel(graphModel);
-			layout.resetPropertiesValues();
-
-			int areaInt = inner.containsKey("area") ? Integer.parseInt(inner.get("area").toString()) : 100;
-			int speedInt = inner.containsKey("speed") ? Integer.parseInt(inner.get("speed").toString()) : 50;
-			int gravityInt = inner.containsKey("gravity") ? Integer.parseInt(inner.get("gravity").toString()) : 0;
-			float area = (float) areaInt;
-			double speed = (double) speedInt;
-			double gravity = (double) gravityInt;
-
-			layout.setArea(area);
-			layout.setSpeed(speed);
-			layout.setGravity(gravity);
-
-			layout.initAlgo();
-			for (int i = 0; i < iterations && layout.canAlgo(); i++) {
-				layout.goAlgo();
-			}
-			layout.endAlgo();
-
+			Layouts.FruchtermanReingoldLayout(graphModel, layoutSettings, iterations);
 		}
 	}
 	

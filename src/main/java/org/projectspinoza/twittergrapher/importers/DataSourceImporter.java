@@ -33,16 +33,14 @@ public class DataSourceImporter {
 			List<String[]> edges = buildEdges(tweet);
 			addToContainer(edges);
 		}
-
 		return container;
 	}
 
 	private void addToContainer(List<String[]> edges) {
 
 		for (String[] edge : edges) {
-
+			
 			EdgeDraft edgeDraft = null;
-
 			String edgeId = edge[0] + "-" + edge[1];
 
 			if (container.edgeExists(edgeId)) {
@@ -106,7 +104,6 @@ public class DataSourceImporter {
 		Set<String> tags = new HashSet<String>();
 
 		for (String part : parts) {
-
 			part = part.trim();
 			if (part.length() < 2)
 				continue;
@@ -114,7 +111,6 @@ public class DataSourceImporter {
 				continue;
 
 			if (part.startsWith("#")) {
-
 				// . splits hashtags of type: #tag1#tag2...
 				if ((part.length() - part.replace("#", "").length()) > 1) {
 					String[] subParts = part.split("#");
@@ -125,11 +121,9 @@ public class DataSourceImporter {
 							tags.add(sb);
 						}
 					}
-
 					continue;
 				}
 				part = part.replaceAll("[^a-zA-Z0-9_-]", "").trim();
-
 				part = part.replace("\\s", "");
 				if (part.length() > 1) {
 					tags.add(part);
