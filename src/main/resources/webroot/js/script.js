@@ -84,6 +84,13 @@ $('.nodecentrality,.pagerank,.neighborcount').jRange({
     }
 });
   
+$('.clickable-dummy').click(function(e){
+    if ($('#onFlyChanges').is(":checked") && nodesCount > 0) {
+       isPostProcessing = true;
+    $('#clickbtn').trigger("click");
+   }
+});
+
   sigma.classes.graph.addMethod('neighbors', function(nodeId) {
   var k,
   neighbors = {},
