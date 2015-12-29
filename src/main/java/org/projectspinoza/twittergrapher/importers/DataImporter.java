@@ -39,26 +39,26 @@ import com.mongodb.client.MongoDatabase;
 public class DataImporter {
 
 	private TransportClient elasticSearchClient;
-	private Settings client_settings;
-	private JsonObject sources_cred_json;
-	private Map<String, Object> elasticsearch_cred = new HashMap<String, Object>();
-	private Map<String, Object> mongodb_cred = new HashMap<String, Object>();
-	private Map<String, Object> mysql_cred = new HashMap<String, Object>();
-	private String input_file;
-	private String query_str;
-	private String source_selected;
-	List<String> response_list_str_container = null;
+	private Settings clientSettings;
+	private JsonObject sourcesCredJson;
+	private Map<String, Object> elasticSearchCred = new HashMap<String, Object>();
+	private Map<String, Object> mongodbCred = new HashMap<String, Object>();
+	private Map<String, Object> mysqlCred = new HashMap<String, Object>();
+	private String inputFile;
+	private String queryString;
+	private String sourceSelected;
+	List<String> responseListStrContainer = null;
 
 	public DataImporter(Map<String, Object> settings) {
 
-		this.sources_cred_json = (JsonObject) settings.get("sources_cred");
-		this.elasticsearch_cred = sources_cred_json.getJsonObject(
+		this.sourcesCredJson = (JsonObject) settings.get("sources_cred");
+		this.elasticSearchCred = sourcesCredJson.getJsonObject(
 				"elasticsearch").getMap();
-		this.mongodb_cred = sources_cred_json.getJsonObject("mongodb").getMap();
-		this.mysql_cred = sources_cred_json.getJsonObject("mysql").getMap();
-		this.input_file = sources_cred_json.getString("file");
-		this.query_str = (String) settings.get("query_str");
-		this.source_selected = (String) settings.get("source_selected");
+		this.mongodbCred = sourcesCredJson.getJsonObject("mongodb").getMap();
+		this.mysqlCred = sourcesCredJson.getJsonObject("mysql").getMap();
+		this.inputFile = sourcesCredJson.getString("file");
+		this.queryString = (String) settings.get("query_str");
+		this.sourceSelected = (String) settings.get("source_selected");
 
 	}
 
@@ -66,14 +66,14 @@ public class DataImporter {
 
 		List<String> response_tweets_list = null;
 
-		switch (source_selected) {
+		switch (sourceSelected) {
 		case "elasticsearch":
 
 			if (elasticsearch_connect()) {
 				response_tweets_list = elasticsearch_search(
-						this.elasticsearch_cred.get("index").toString(),
-						this.elasticsearch_cred.get("type").toString(),
-						this.query_str, 5000);
+						this.elasticSearchCred.get("index").toString(),
+						this.elasticSearchCred.get("type").toString(),
+						this.queryString, 5000);
 			} else {
 				System.out.println("Error connecting to elasticsearch...!");
 				return null;
@@ -97,7 +97,7 @@ public class DataImporter {
 
 	private List<String> mysqlDataReader() {
 
-		List<String> response_list = new ArrayList<String>();
+		List<String> responseList = new ArrayList<String>();
 		Connection connection = null;
 		Statement statement = null;
 
@@ -105,36 +105,36 @@ public class DataImporter {
 
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection("jdbc:mysql://"
-					+ this.mysql_cred.get("host").toString() + ":"
-					+ this.mysql_cred.get("port").toString() + "/"
-					+ this.mysql_cred.get("database").toString(), "root", "");
+					+ this.mysqlCred.get("host").toString() + ":"
+					+ this.mysqlCred.get("port").toString() + "/"
+					+ this.mysqlCred.get("database").toString(), "root", "");
 
 			if (connection != null) {
 
-				String[] query_terms = this.query_str.trim().split(" ");
+				String[] query_terms = this.queryString.trim().split(" ");
 				String query_like = " LIKE '%" + query_terms[0] + "%' ";
 
 				for (int i = 1; i < query_terms.length; i++) {
-					query_like.concat("or " + this.mysql_cred.get("data_column").toString()
+					query_like.concat("or " + this.mysqlCred.get("data_column").toString()
 							+ " LIKE '%" + query_terms[i] + "%' ");
 				}
 
 				String query_mysql = "SELECT "
-						+ this.mysql_cred.get("data_column").toString()
+						+ this.mysqlCred.get("data_column").toString()
 						+ " from "
-						+ this.mysql_cred.get("table_name").toString()
+						+ this.mysqlCred.get("table_name").toString()
 						+ " where "
-						+ this.mysql_cred.get("data_column").toString()
+						+ this.mysqlCred.get("data_column").toString()
 						+ query_like;
 
 				statement = connection.createStatement();
 				ResultSet results_set = statement.executeQuery(query_mysql);
 
 				while (results_set.next()) {
-					String tweet = results_set.getString(this.mysql_cred.get(
+					String tweet = results_set.getString(this.mysqlCred.get(
 							"data_column").toString());
 					try{
-						response_list.add(new JSONObject(tweet).get("text")
+						responseList.add(new JSONObject(tweet).get("text")
 								.toString());
 					} catch (JSONException | DecodeException e) {
 					}
@@ -150,25 +150,25 @@ public class DataImporter {
 			return null;
 		}
 
-		return response_list;
+		return responseList;
 	}
 
 	private List<String> mongodb_search() {
 
-		MongoClient mongoClient = new MongoClient(this.mongodb_cred.get("host")
-				.toString(), Integer.parseInt(this.mongodb_cred.get("port")
+		MongoClient mongoClient = new MongoClient(this.mongodbCred.get("host")
+				.toString(), Integer.parseInt(this.mongodbCred.get("port")
 				.toString()));
-		MongoDatabase db = mongoClient.getDatabase(this.mongodb_cred.get(
+		MongoDatabase db = mongoClient.getDatabase(this.mongodbCred.get(
 				"database").toString());
 
 		FindIterable<Document> iterable = db.getCollection(
-				this.mongodb_cred.get("collection").toString()).find(
-				new Document("$text", new Document("$search", this.query_str)));
+				this.mongodbCred.get("collection").toString()).find(
+				new Document("$text", new Document("$search", this.queryString)));
 
-		response_list_str_container = new ArrayList<String>();
+		responseListStrContainer = new ArrayList<String>();
 		iterable.forEach(new TgBlock());
 		mongoClient.close();
-		return response_list_str_container;
+		return responseListStrContainer;
 	}
 
 	private class TgBlock implements Block<Document> {
@@ -179,7 +179,7 @@ public class DataImporter {
 		public void apply(Document document) {
 			try{
 				tweet = new JsonObject(document.getString("tweet"));
-				response_list_str_container.add(tweet.getString("text"));
+				responseListStrContainer.add(tweet.getString("text"));
 			} catch (JSONException | DecodeException e) {
 			}
 		}
@@ -187,11 +187,11 @@ public class DataImporter {
 
 	private List<String> fileDataReader() throws IOException {
 
-		List<String> response_list = new ArrayList<String>();
+		List<String> responseList = new ArrayList<String>();
 		BufferedReader reader = null;
-		String[] search_keywords = this.query_str.split("\\s");
+		String[] search_keywords = this.queryString.split("\\s");
  		try {
-			reader = new BufferedReader(new FileReader(new File(input_file)));
+			reader = new BufferedReader(new FileReader(new File(inputFile)));
 			String line;
 			while ((line = reader.readLine()) != null) {
 				String tweet_text = null;
@@ -207,7 +207,7 @@ public class DataImporter {
 					}
 				}
 				if (contains_keyword){
-					response_list.add(tweet_text);
+					responseList.add(tweet_text);
 				}
 			}
 		} catch (IOException e) {
@@ -218,30 +218,30 @@ public class DataImporter {
 			}
 		}
 
-		return response_list;
+		return responseList;
 	}
 
 	private boolean elasticsearch_connect() {
 
-		if (this.elasticsearch_cred.containsKey("cluster.name")
-				&& !this.elasticsearch_cred.get("cluster.name").toString()
+		if (this.elasticSearchCred.containsKey("cluster.name")
+				&& !this.elasticSearchCred.get("cluster.name").toString()
 						.trim().isEmpty()) {
 
-			this.client_settings = ImmutableSettings
+			this.clientSettings = ImmutableSettings
 					.settingsBuilder()
 					.put("cluster.name",
-							this.elasticsearch_cred.get("cluster.name")
+							this.elasticSearchCred.get("cluster.name")
 									.toString()).build();
 		} else {
-			this.client_settings = ImmutableSettings.settingsBuilder()
+			this.clientSettings = ImmutableSettings.settingsBuilder()
 					.put("cluster.name", "elasticsearch").build();
 		}
 
-		setElasticSearchClient(new TransportClient(this.client_settings));
+		setElasticSearchClient(new TransportClient(this.clientSettings));
 		getElasticSearchClient().addTransportAddress(
-				new InetSocketTransportAddress(this.elasticsearch_cred.get(
+				new InetSocketTransportAddress(this.elasticSearchCred.get(
 						"host").toString(), Integer
-						.parseInt(this.elasticsearch_cred.get("port")
+						.parseInt(this.elasticSearchCred.get("port")
 								.toString())));
 
 		return verifyConnection();
@@ -260,7 +260,7 @@ public class DataImporter {
 	private List<String> elasticsearch_search(String indexname,
 			String typename, String query_terms, int size) {
 
-		List<String> response_list = new ArrayList<String>();
+		List<String> responseList = new ArrayList<String>();
 
 		SearchResponse response = getElasticSearchClient()
 				.prepareSearch(indexname).setTypes(typename)
@@ -269,9 +269,9 @@ public class DataImporter {
 				.setSize(size).setExplain(true).execute().actionGet();
 
 		for (SearchHit hit : response.getHits()) {
-			response_list.add(hit.getSource().get("text").toString());
+			responseList.add(hit.getSource().get("text").toString());
 		}
-		return response_list;
+		return responseList;
 	}
 
 	public TransportClient getElasticSearchClient() {
