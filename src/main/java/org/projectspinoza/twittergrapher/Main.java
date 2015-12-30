@@ -21,12 +21,12 @@ public class Main {
 	public static void main(String[] args) {
 
 		// read command line arguments
-		ConfigParams conf_params = readCommandLineArguments(args);
-		JsonObject graph_conf_json = getConfigJson(conf_params.config_file);
-		GraphServer graph_server = (graph_conf_json == null)? null: new GraphServer(graph_conf_json);
-		boolean app_deployed = (graph_server == null)? false:graph_server.deployServer();
+		ConfigParams confParams = readCommandLineArguments(args);
+		JsonObject graphConfJson = getConfigJson(confParams.configFile);
+		GraphServer graphServer = (graphConfJson == null)? null: new GraphServer(graphConfJson);
+		boolean appDeployed = (graphServer == null)? false:graphServer.deployServer();
 		
-		if (app_deployed) {
+		if (appDeployed) {
 			System.out.println("App server deployed successfully at port " + app_port);
 		}else {
 			System.out.println("Error deploying App server.");
@@ -34,34 +34,34 @@ public class Main {
 	}
 
 	private static ConfigParams readCommandLineArguments(String[] args) {
-		ConfigParams conf_params = new ConfigParams();
-		JCommander root_params = null;
+		ConfigParams confParams = new ConfigParams();
+		JCommander rootParams = null;
 		try {
-			root_params = new JCommander(conf_params, args);
+			rootParams = new JCommander(confParams, args);
 		} catch (ParameterException e) {
 			System.out.println("error found unknown arguments "
-					+ root_params.getUnknownOptions());
+					+ rootParams.getUnknownOptions());
 		}
-		return conf_params;
+		return confParams;
 	}
 
 	private static JsonObject getConfigJson(String file) {
-		String conf_json_str;
-		JsonObject conf_json = null;
+		String confJsonStr;
+		JsonObject confJson = null;
 		
 		try {
-			conf_json_str = new String(Files.readAllBytes(Paths.get(file)));
-			conf_json = new JsonObject(conf_json_str);
+			confJsonStr = new String(Files.readAllBytes(Paths.get(file)));
+			confJson = new JsonObject(confJsonStr);
 		} catch (IOException e) {
 			System.out.println("File doesn't exists or error reading file.");
 		} catch (JSONException | DecodeException e) {
 			System.out.println("Error parsing configuration file JSON.");
 		}
-		return conf_json;
+		return confJson;
 	}
 
 	private static class ConfigParams {
 		@Parameter(names = "-conf", description = "Graph configuration file.")
-		private String config_file;
+		private String configFile;
 	}
 }

@@ -25,14 +25,14 @@ public class GraphServer {
 		GENERATE_GRAPH,
 		POST_PROCESS_GRAPH
 	}
-	private JsonObject graph_config_json;
+	private JsonObject graphConfigJson;
 	private Vertx vertx;
 	private HttpServer server;
 	private Router router;
 	
-	JsonObject layout_settings_json;
-	Map<String, Object> layout_settings;
-	JsonObject layout_algo;
+	JsonObject layoutSettingsJson;
+	Map<String, Object> layoutSettings;
+	JsonObject layoutAlgo;
 	
 	GraphServer()  {
 	}
@@ -47,14 +47,14 @@ public class GraphServer {
 
 	public boolean deployServer() {
 
-		String host = graph_config_json.getJsonObject("app_settings")
+		String host = graphConfigJson.getJsonObject("app_settings")
 				.getString("host");
-		int Port = graph_config_json.getJsonObject("app_settings").getInteger(
+		int Port = graphConfigJson.getJsonObject("app_settings").getInteger(
 				"port");
 
-		layout_settings_json = this.graph_config_json.getJsonObject("layout_settings");
-		layout_settings = layout_settings_json.getMap();
-		layout_algo = layout_settings_json.getJsonObject("la");
+		layoutSettingsJson = this.graphConfigJson.getJsonObject("layout_settings");
+		layoutSettings = layoutSettingsJson.getMap();
+		layoutAlgo = layoutSettingsJson.getJsonObject("la");
 		
 		VertxOptions options = new VertxOptions();
 		options.setMaxEventLoopExecuteTime(Long.MAX_VALUE);
@@ -106,8 +106,8 @@ public class GraphServer {
 	private void graphResponseHandler(RoutingContext routingContext) {
 		
 		final ThymeleafTemplateEngine engine = ThymeleafTemplateEngine.create();
-		routingContext.put("color", this.graph_config_json.getJsonObject("layout_settings").getString("bk_color"));
-		routingContext.put("graph_settings", this.graph_config_json.getJsonObject("graph_settings").getMap());
+		routingContext.put("color", this.graphConfigJson.getJsonObject("layout_settings").getString("bk_color"));
+		routingContext.put("graph_settings", this.graphConfigJson.getJsonObject("graph_settings").getMap());
 		engine.render(routingContext,"webroot/index.html",results_async -> {
 			if (results_async.succeeded()) {
 				routingContext.response().putHeader(HttpHeaders.CONTENT_TYPE,"text/html").end(results_async.result());
@@ -121,7 +121,7 @@ public class GraphServer {
 		
 		MultiMap parameters = routingContext.request().params();
 		Map<String, Object> sources_settings = new HashMap<String, Object>();
-		JsonObject graph_settings = this.graph_config_json.getJsonObject("graph_settings");
+		JsonObject graph_settings = this.graphConfigJson.getJsonObject("graph_settings");
 		String data_source = routingContext.request().getParam("datasource");
 
 		if (data_source == null) {
@@ -129,41 +129,41 @@ public class GraphServer {
 		}
 
 		if (parameters.get("NodeSizeBy").contains("PageRank")) {
-			layout_settings.put("nsb", "pr");
+			layoutSettings.put("nsb", "pr");
 		} else if (parameters.get("NodeSizeBy").contains("NodeCentrality")) {
-			layout_settings.put("nsb", "nc");
+			layoutSettings.put("nsb", "nc");
 		}
 		
 		if (parameters.get("layouttype").contains("FruchtermanReingold")) {
 
-			layout_algo.put("name", "FruchtermanReingold");
-			layout_settings.put("la", layout_algo.toString());
+			layoutAlgo.put("name", "FruchtermanReingold");
+			layoutSettings.put("la", layoutAlgo.toString());
 			
 		} else if (parameters.get("layouttype").contains("ForceAtlasLayout")) {
 
-			layout_algo.put("name", "ForceAtlasLayout");
-			layout_settings.put("la", layout_algo.toString());
+			layoutAlgo.put("name", "ForceAtlasLayout");
+			layoutSettings.put("la", layoutAlgo.toString());
 		} else if (parameters.get("layouttype").contains("YifanHuLayout")) {
 			
-			layout_algo.put("name", "YifanHuLayout");
-			layout_settings.put("la", layout_algo.toString());
+			layoutAlgo.put("name", "YifanHuLayout");
+			layoutSettings.put("la", layoutAlgo.toString());
 		}
 
 		if (!parameters.get("nc").contains("null")) {
-			layout_settings.put("nct", Integer.parseInt(parameters.get("nc")));
+			layoutSettings.put("nct", Integer.parseInt(parameters.get("nc")));
 		} else {
-			layout_settings.put("nct", 0);
+			layoutSettings.put("nct", 0);
 		}
 		
 		if(!parameters.get("NeighborCountRange").contains("null")){
-			layout_settings.put("neighborcountrange",Double.parseDouble(parameters.get("NeighborCountRange")));
+			layoutSettings.put("neighborcountrange",Double.parseDouble(parameters.get("NeighborCountRange")));
 		}else{
-			layout_settings.put("neighborcountrange",0);
+			layoutSettings.put("neighborcountrange",0);
 		}
 		if (!parameters.get("prt").contains("null")) {
-			layout_settings.put("prt", Integer.parseInt(parameters.get("prt")));
+			layoutSettings.put("prt", Integer.parseInt(parameters.get("prt")));
 		} else {
-			layout_settings.put("prt", 0);
+			layoutSettings.put("prt", 0);
 		}
 		
 		sources_settings.put("source_selected", data_source);
@@ -174,10 +174,10 @@ public class GraphServer {
 			sources_settings.put("query_str", parameters.get("searchField").toString());
 			Main.searchValues = parameters.get("searchField").toString();
 		}
-		sources_settings.put("sources_cred", this.graph_config_json.getJsonObject("data_sources"));
-		layout_settings.put("settings", sources_settings);
+		sources_settings.put("sources_cred", this.graphConfigJson.getJsonObject("data_sources"));
+		layoutSettings.put("settings", sources_settings);
 		
-		routingContext.put("color", layout_settings.get("bk_color")
+		routingContext.put("color", layoutSettings.get("bk_color")
 				.toString());
 		routingContext.put("graph_settings", graph_settings.getMap());
 
@@ -186,7 +186,7 @@ public class GraphServer {
 		GraphFactory graphFactory = new GraphFactory();
 		Map<String, Object> result = null;
 		try {
-			TwitterGraph graph = graphFactory.getGraph(type,layout_settings);
+			TwitterGraph graph = graphFactory.getGraph(type,layoutSettings);
 			result = new HashMap<String, Object>();
 			result.put("nodes", graph);
 			routingContext.response().end(new JsonObject(result).toString());
@@ -209,11 +209,11 @@ public class GraphServer {
 	}
 
 	public JsonObject getGraphConfig() {
-		return graph_config_json;
+		return graphConfigJson;
 	}
 
-	public void setGraphConfig(JsonObject graph_config_json) {
-		this.graph_config_json = graph_config_json;
+	public void setGraphConfig(JsonObject graphConfigJson) {
+		this.graphConfigJson = graphConfigJson;
 	}
 
 }
