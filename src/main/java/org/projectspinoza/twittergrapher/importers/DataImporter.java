@@ -49,9 +49,10 @@ public class DataImporter {
 	private String sourceSelected;
 	List<String> responseListStrContainer = null;
 
+	@SuppressWarnings("unchecked")
 	public DataImporter(Map<String, Object> settings) {
 
-		this.sourcesCredJson = (JsonObject) settings.get("sources_cred");
+		this.sourcesCredJson = new JsonObject ( (Map<String, Object>)settings.get("sources_cred"));
 		this.elasticSearchCred = sourcesCredJson.getJsonObject(
 				"elasticsearch").getMap();
 		this.mongodbCred = sourcesCredJson.getJsonObject("mongodb").getMap();

@@ -120,7 +120,7 @@ public class Builder {
 	@SuppressWarnings("unchecked")
 	public static Container generateGraph(ImportController importController, Map<String, Object> settings) throws FileNotFoundException{
 		
-		JsonObject sourcesCredJson = (JsonObject) ((Map<String, Object>) settings.get("settings")).get("sources_cred");
+		JsonObject sourcesCredJson = new JsonObject ((Map<String, Object>)((Map<String, Object>) settings.get("settings")).get("sources_cred"));
 		String inputFile = sourcesCredJson.getString("file");
 		String dataSource = ((Map<String, Object>) settings.get("settings")).get("source_selected").toString();
 		Container container = null;

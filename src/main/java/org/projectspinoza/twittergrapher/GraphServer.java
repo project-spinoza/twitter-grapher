@@ -177,6 +177,10 @@ public class GraphServer {
 		sources_settings.put("sources_cred", this.graphConfigJson.getJsonObject("data_sources"));
 		layoutSettings.put("settings", sources_settings);
 		
+//		String s_test = "{\"nct\":0,\"prt\":0,\"neighborcountrange\":0.0,\"la\":\"{\\\"name\\\":\\\"YifanHuLayout\\\",\\\"it\\\":100,\\\"distance\\\":260}\",\"ncb\":\"cluster\",\"nsb\":\"pr\",\"ecb\":\"mix\",\"et\":\"curve\",\"bk_color\":\"#000\",\"settings\":{\"source_selected\":\"inputfile\",\"sources_cred\":{\"elasticsearch\":{\"host\":\"127.0.0.1\",\"port\":9300,\"cluster.name\":\"elasticsearch\",\"index\":\"myindex\",\"type\":\"mytype\"},\"mongodb\":{\"host\":\"127.0.0.1\",\"port\":27017,\"database\":\"twittergrapher\",\"collection\":\"tweets\",\"field\":\"tweet\"},\"mysql\":{\"host\":\"127.0.0.1\",\"port\":3306,\"user\":\"root\",\"password\":\"\",\"database\":\"twittergrapher\",\"table_name\":\"tweets\",\"data_column\":\"tweet\"},\"file\":\"tweets.txt\"},\"query_str\":\"data\"}}";
+//		Map<String,Object> test_map = (new JsonObject(s_test)).getMap();
+//		layoutSettings = test_map;
+		
 		routingContext.put("color", layoutSettings.get("bk_color")
 				.toString());
 		routingContext.put("graph_settings", graph_settings.getMap());
