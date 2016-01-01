@@ -1,6 +1,6 @@
 package org.projectspinoza.twittergrapher.factory.util;
 
-import io.vertx.core.json.JsonObject;
+import org.json.*;
 
 import java.awt.Color;
 import java.io.File;
@@ -58,8 +58,8 @@ public class Builder {
 		String columnname = "NeighborCount";
 		
 		// Getting layout Options
-		JsonObject layoutAlgoJson = new JsonObject(settings.get("la").toString());
-		Map<String, Object> layoutSettings = layoutAlgoJson.getMap();
+		JSONObject layoutAlgoJson = new JSONObject(settings.get("la").toString());
+		Map<String, Object> layoutSettings = Utils.JsonToMap(layoutAlgoJson); //layoutAlgoJson.getMap();
 		
 		Container container = null;
 		try{
@@ -120,7 +120,7 @@ public class Builder {
 	@SuppressWarnings("unchecked")
 	public static Container generateGraph(ImportController importController, Map<String, Object> settings) throws FileNotFoundException{
 		
-		JsonObject sourcesCredJson = new JsonObject ((Map<String, Object>)((Map<String, Object>) settings.get("settings")).get("sources_cred"));
+		JSONObject sourcesCredJson = new JSONObject (((Map<String, Object>) settings.get("settings")).get("sources_cred").toString());		
 		String inputFile = sourcesCredJson.getString("file");
 		String dataSource = ((Map<String, Object>) settings.get("settings")).get("source_selected").toString();
 		Container container = null;

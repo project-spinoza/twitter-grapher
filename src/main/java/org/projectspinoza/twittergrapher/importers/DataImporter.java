@@ -30,6 +30,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.projectspinoza.twittergrapher.factory.util.Utils;
 
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
@@ -40,7 +41,7 @@ public class DataImporter {
 
 	private TransportClient elasticSearchClient;
 	private Settings clientSettings;
-	private JsonObject sourcesCredJson;
+	private JSONObject sourcesCredJson;
 	private Map<String, Object> elasticSearchCred = new HashMap<String, Object>();
 	private Map<String, Object> mongodbCred = new HashMap<String, Object>();
 	private Map<String, Object> mysqlCred = new HashMap<String, Object>();
@@ -49,14 +50,12 @@ public class DataImporter {
 	private String sourceSelected;
 	List<String> responseListStrContainer = null;
 
-	@SuppressWarnings("unchecked")
 	public DataImporter(Map<String, Object> settings) {
 
-		this.sourcesCredJson = new JsonObject ( (Map<String, Object>)settings.get("sources_cred"));
-		this.elasticSearchCred = sourcesCredJson.getJsonObject(
-				"elasticsearch").getMap();
-		this.mongodbCred = sourcesCredJson.getJsonObject("mongodb").getMap();
-		this.mysqlCred = sourcesCredJson.getJsonObject("mysql").getMap();
+		this.sourcesCredJson = new JSONObject (settings.get("sources_cred").toString());
+		this.elasticSearchCred = Utils.JsonToMap(sourcesCredJson.getJSONObject("elasticsearch"));
+		this.mongodbCred = Utils.JsonToMap(sourcesCredJson.getJSONObject("mongodb"));
+		this.mysqlCred = Utils.JsonToMap(sourcesCredJson.getJSONObject("mysql"));
 		this.inputFile = sourcesCredJson.getString("file");
 		this.queryString = (String) settings.get("query_str");
 		this.sourceSelected = (String) settings.get("source_selected");

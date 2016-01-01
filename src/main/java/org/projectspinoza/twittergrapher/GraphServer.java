@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.projectspinoza.twittergrapher.factory.GraphFactory;
+import org.projectspinoza.twittergrapher.factory.util.ConfigHolder;
 import org.projectspinoza.twittergrapher.graph.TwitterGraph;
 
 public class GraphServer {
@@ -29,22 +30,27 @@ public class GraphServer {
 	private Vertx vertx;
 	private HttpServer server;
 	private Router router;
+	private ConfigHolder settingsConf;
 	
 	JsonObject layoutSettingsJson;
 	Map<String, Object> layoutSettings;
 	JsonObject layoutAlgo;
 	
 	GraphServer()  {
+		settingsConf = new ConfigHolder();
 	}
 
 	GraphServer(JsonObject conf_json_obj) {
+		this();
 		setGraphConfig(conf_json_obj);
 	}
 
 	GraphServer(String conf_json_str) {
+		this();
 		setGraphConfig(new JsonObject(conf_json_str));
 	}
-
+	
+	
 	public boolean deployServer() {
 
 		String host = graphConfigJson.getJsonObject("app_settings")
@@ -103,6 +109,9 @@ public class GraphServer {
 		return serverListening(host, Port);
 	}
 
+	
+	
+	
 	private void graphResponseHandler(RoutingContext routingContext) {
 		
 		final ThymeleafTemplateEngine engine = ThymeleafTemplateEngine.create();
@@ -117,6 +126,9 @@ public class GraphServer {
 		});
 	}
 
+	
+	
+	
 	private void ajaxResponseHandler(RoutingContext routingContext, GraphProcessID postProcessing) {
 		
 		MultiMap parameters = routingContext.request().params();
@@ -199,6 +211,8 @@ public class GraphServer {
 		}
 	}
 
+	
+	
 	private boolean serverListening(String host, int port) {
 		Socket socket = null;
 		try {
@@ -211,13 +225,28 @@ public class GraphServer {
 				try {socket.close();} catch (Exception e) {}
 		}
 	}
-
+	
+	
 	public JsonObject getGraphConfig() {
 		return graphConfigJson;
 	}
+	
+	
 
 	public void setGraphConfig(JsonObject graphConfigJson) {
+		
 		this.graphConfigJson = graphConfigJson;
+		settingsConf.setSettings(this.graphConfigJson);
 	}
+
+	public ConfigHolder getSettingsConf() {
+		return settingsConf;
+	}
+
+	public void setSettingsConf(ConfigHolder settingsConf) {
+		this.settingsConf = settingsConf;
+	}
+	
+	
 
 }
