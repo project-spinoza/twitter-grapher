@@ -16,8 +16,10 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.projectspinoza.twittergrapher.factory.GraphFactory;
 import org.projectspinoza.twittergrapher.factory.util.ConfigHolder;
+import org.projectspinoza.twittergrapher.factory.util.Utils;
 import org.projectspinoza.twittergrapher.graph.TwitterGraph;
 
 public class GraphServer {
@@ -26,15 +28,16 @@ public class GraphServer {
 		GENERATE_GRAPH,
 		POST_PROCESS_GRAPH
 	}
+	
 	private JsonObject graphConfigJson;
 	private Vertx vertx;
 	private HttpServer server;
 	private Router router;
 	private ConfigHolder settingsConf;
 	
-	JsonObject layoutSettingsJson;
+	JSONObject layoutSettingsJson;
 	Map<String, Object> layoutSettings;
-	JsonObject layoutAlgo;
+	JSONObject layoutAlgo;
 	
 	GraphServer()  {
 		settingsConf = new ConfigHolder();
@@ -53,14 +56,12 @@ public class GraphServer {
 	
 	public boolean deployServer() {
 
-		String host = graphConfigJson.getJsonObject("app_settings")
-				.getString("host");
-		int Port = graphConfigJson.getJsonObject("app_settings").getInteger(
-				"port");
+		String host = settingsConf.getAppSettings().get("host").toString(); // graphConfigJson.getJsonObject("app_settings").getString("host");
+		int Port = (int) settingsConf.getAppSettings().get("port"); //graphConfigJson.getJsonObject("app_settings").getInteger("port");
 
-		layoutSettingsJson = this.graphConfigJson.getJsonObject("layout_settings");
-		layoutSettings = layoutSettingsJson.getMap();
-		layoutAlgo = layoutSettingsJson.getJsonObject("la");
+		layoutSettingsJson = new JSONObject(settingsConf.getLayoutSettings());// this.graphConfigJson.getJsonObject("layout_settings");
+		layoutSettings = Utils.JsonToMap(layoutSettingsJson);// .getMap();
+		layoutAlgo = layoutSettingsJson.getJSONObject("la");
 		
 		VertxOptions options = new VertxOptions();
 		options.setMaxEventLoopExecuteTime(Long.MAX_VALUE);
@@ -115,8 +116,8 @@ public class GraphServer {
 	private void graphResponseHandler(RoutingContext routingContext) {
 		
 		final ThymeleafTemplateEngine engine = ThymeleafTemplateEngine.create();
-		routingContext.put("color", this.graphConfigJson.getJsonObject("layout_settings").getString("bk_color"));
-		routingContext.put("graph_settings", this.graphConfigJson.getJsonObject("graph_settings").getMap());
+		routingContext.put("color", this.settingsConf.getLayoutSettings().get("bk_color"));
+		routingContext.put("graph_settings", this.settingsConf.getGraphSettings());
 		engine.render(routingContext,"webroot/index.html",results_async -> {
 			if (results_async.succeeded()) {
 				routingContext.response().putHeader(HttpHeaders.CONTENT_TYPE,"text/html").end(results_async.result());
@@ -133,7 +134,7 @@ public class GraphServer {
 		
 		MultiMap parameters = routingContext.request().params();
 		Map<String, Object> sources_settings = new HashMap<String, Object>();
-		JsonObject graph_settings = this.graphConfigJson.getJsonObject("graph_settings");
+		JSONObject graph_settings = new JSONObject(this.settingsConf.getGraphSettings()); // this.graphConfigJson.getJsonObject("graph_settings");
 		String data_source = routingContext.request().getParam("datasource");
 
 		if (data_source == null) {
@@ -186,7 +187,7 @@ public class GraphServer {
 			sources_settings.put("query_str", parameters.get("searchField").toString());
 			Main.searchValues = parameters.get("searchField").toString();
 		}
-		sources_settings.put("sources_cred", this.graphConfigJson.getJsonObject("data_sources"));
+		sources_settings.put("sources_cred", new JSONObject (this.settingsConf.getSourcesCred()));
 		layoutSettings.put("settings", sources_settings);
 		
 //		String s_test = "{\"nct\":0,\"prt\":0,\"neighborcountrange\":0.0,\"la\":\"{\\\"name\\\":\\\"YifanHuLayout\\\",\\\"it\\\":100,\\\"distance\\\":260}\",\"ncb\":\"cluster\",\"nsb\":\"pr\",\"ecb\":\"mix\",\"et\":\"curve\",\"bk_color\":\"#000\",\"settings\":{\"source_selected\":\"inputfile\",\"sources_cred\":{\"elasticsearch\":{\"host\":\"127.0.0.1\",\"port\":9300,\"cluster.name\":\"elasticsearch\",\"index\":\"myindex\",\"type\":\"mytype\"},\"mongodb\":{\"host\":\"127.0.0.1\",\"port\":27017,\"database\":\"twittergrapher\",\"collection\":\"tweets\",\"field\":\"tweet\"},\"mysql\":{\"host\":\"127.0.0.1\",\"port\":3306,\"user\":\"root\",\"password\":\"\",\"database\":\"twittergrapher\",\"table_name\":\"tweets\",\"data_column\":\"tweet\"},\"file\":\"tweets.txt\"},\"query_str\":\"data\"}}";
@@ -195,7 +196,7 @@ public class GraphServer {
 		
 		routingContext.put("color", layoutSettings.get("bk_color")
 				.toString());
-		routingContext.put("graph_settings", graph_settings.getMap());
+		routingContext.put("graph_settings", Utils.JsonToMap(graph_settings));
 
 		//generating graph...
 		String type = "sigmaGraph";

@@ -12,6 +12,7 @@ public class ConfigHolder {
 	private Map<String, Object> elasticSearchCred;
 	private Map<String, Object> mongoDbCred;
 	private Map<String, Object> mysqlCred;
+	private Map<String, Object> sourcesCred;
 	private String inputFileCred;
 	private JsonObject settingsJson;
 	
@@ -126,6 +127,17 @@ public class ConfigHolder {
 		setMongoDbCred((Map<String, Object>) sourceSettingsMap.get("mongodb"));
 		setMysqlCred((Map<String, Object>) sourceSettingsMap.get("mysql"));
 		setInputFileCred((String) sourceSettingsMap.get("file"));
+		setSourcesCred(sourceSettingsMap);
+	}
+
+
+	public Map<String, Object> getSourcesCred() {
+		return sourcesCred;
+	}
+
+
+	public void setSourcesCred(Map<String, Object> sourcesCred) {
+		this.sourcesCred = sourcesCred;
 	}
 
 }
