@@ -1,4 +1,4 @@
-package org.projectspinoza.twittergrapher.factory.util;
+package org.projectspinoza.twittergrapher.configurations;
 
 import io.vertx.core.json.JsonObject;
 
@@ -16,12 +16,15 @@ public class ConfigHolder {
 	private String inputFileCred;
 	private JsonObject settingsJson;
 	
-	public ConfigHolder () {}
-	
+	public ConfigHolder () {
+		
+		//initialize all properties here for custum properties settings...
+		
+	}
 	
 	public ConfigHolder (JsonObject settings) {
-		this.settingsJson = settings;
-		expendSettings();
+		this();
+		setSettings(settings);
 	}
 	
 	
@@ -112,6 +115,9 @@ public class ConfigHolder {
 		this.inputFileCred = inputFileCred;
 	}
 
+	
+	//single property methods
+	
 	
 	@SuppressWarnings("unchecked")
 	private void expendSettings () {
