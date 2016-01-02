@@ -16,11 +16,7 @@ public class ConfigHolder {
 	private String inputFileCred;
 	private JsonObject settingsJson;
 	
-	public ConfigHolder () {
-		
-		//initialize all properties here for custum properties settings...
-		
-	}
+	public ConfigHolder () {}
 	
 	public ConfigHolder (JsonObject settings) {
 		this();
@@ -134,6 +130,9 @@ public class ConfigHolder {
 		setMysqlCred((Map<String, Object>) sourceSettingsMap.get("mysql"));
 		setInputFileCred((String) sourceSettingsMap.get("file"));
 		setSourcesCred(sourceSettingsMap);
+		
+		Configuration.getInstance().loadConfigurations(this);
+		//System.out.println(Configuration.getInstance().toString());
 	}
 
 
