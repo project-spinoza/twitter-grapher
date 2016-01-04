@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.projectspinoza.twittergrapher.configurations.ConfigHolder;
+import org.projectspinoza.twittergrapher.configurations.Configuration;
 import org.projectspinoza.twittergrapher.factory.GraphFactory;
 import org.projectspinoza.twittergrapher.factory.util.Utils;
 import org.projectspinoza.twittergrapher.graph.TwitterGraph;
@@ -180,12 +181,14 @@ public class GraphServer {
 		}
 		
 		sources_settings.put("source_selected", data_source);
+		Configuration.getInstance().setDataSource(data_source);
 		
 		if (postProcessing == GraphProcessID.POST_PROCESS_GRAPH && Main.searchValues != null){
 			sources_settings.put("query_str", Main.searchValues.toString());
 		}else {
 			sources_settings.put("query_str", parameters.get("searchField").toString());
 			Main.searchValues = parameters.get("searchField").toString();
+			Configuration.getInstance().setSearchValue(parameters.get("searchField").toString());
 		}
 		sources_settings.put("sources_cred", new JSONObject (this.settingsConf.getSourcesCred()));
 		layoutSettings.put("settings", sources_settings);

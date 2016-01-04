@@ -95,8 +95,8 @@ public class Configuration {
 		this.layoutAlgoDistance = containsKey((Map<String, Object>) cHolder.getLayoutSettings().get("la"), "distance") ?  (int) ((Map<String, Object>) cHolder.getLayoutSettings().get("la")).get("distance") : 260;
 
 		this.fileName = cHolder.getInputFileCred();
-		this.dataSource = "";
-		this.searchValue = "";
+		this.dataSource = null;
+		this.searchValue = null;
 		
 	}
 	
@@ -262,10 +262,10 @@ public class Configuration {
 	public void setElasticsearchPort(int elasticsearchPort) {
 		this.elasticsearchPort = elasticsearchPort;
 	}
-	public String getClusterName() {
+	public String getElasticsearchClusterName() {
 		return clusterName;
 	}
-	public void setClusterName(String clusterName) {
+	public void setElasticsearchClusterName(String clusterName) {
 		this.clusterName = clusterName;
 	}
 	public String getElasticsearchIndex() {

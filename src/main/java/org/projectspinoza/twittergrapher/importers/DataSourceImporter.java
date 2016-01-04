@@ -16,14 +16,11 @@ import org.gephi.io.importer.impl.ImportContainerImpl;
 public class DataSourceImporter {
 	private ImportContainerImpl container;
 
-	@SuppressWarnings("unchecked")
 	public ImportContainerImpl importDataSource(Map<String, Object> settings) {
 
 		List<String> tweets = null;
 		try {
-			tweets = new DataImporter(
-					(Map<String, Object>) settings.get("settings"))
-					.importDataList();
+			tweets = new DataImporter().importDataList();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

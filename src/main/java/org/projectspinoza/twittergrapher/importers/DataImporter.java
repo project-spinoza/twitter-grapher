@@ -13,9 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bson.Document;
 import org.elasticsearch.action.search.SearchResponse;
@@ -30,7 +28,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.projectspinoza.twittergrapher.factory.util.Utils;
+import org.projectspinoza.twittergrapher.configurations.Configuration;
 
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
@@ -39,41 +37,29 @@ import com.mongodb.client.MongoDatabase;
 
 public class DataImporter {
 
+	private Configuration settingsConf;
+	
 	private TransportClient elasticSearchClient;
 	private Settings clientSettings;
-	private JSONObject sourcesCredJson;
-	private Map<String, Object> elasticSearchCred = new HashMap<String, Object>();
-	private Map<String, Object> mongodbCred = new HashMap<String, Object>();
-	private Map<String, Object> mysqlCred = new HashMap<String, Object>();
-	private String inputFile;
-	private String queryString;
-	private String sourceSelected;
 	List<String> responseListStrContainer = null;
 
-	public DataImporter(Map<String, Object> settings) {
-
-		this.sourcesCredJson = new JSONObject (settings.get("sources_cred").toString());
-		this.elasticSearchCred = Utils.JsonToMap(sourcesCredJson.getJSONObject("elasticsearch"));
-		this.mongodbCred = Utils.JsonToMap(sourcesCredJson.getJSONObject("mongodb"));
-		this.mysqlCred = Utils.JsonToMap(sourcesCredJson.getJSONObject("mysql"));
-		this.inputFile = sourcesCredJson.getString("file");
-		this.queryString = (String) settings.get("query_str");
-		this.sourceSelected = (String) settings.get("source_selected");
-
+	public DataImporter() {
+		settingsConf = Configuration.getInstance();
 	}
 
 	public List<String> importDataList() throws IOException {
 
 		List<String> response_tweets_list = null;
 
-		switch (sourceSelected) {
+		switch (settingsConf.getDataSource()) {
+		
 		case "elasticsearch":
-
+			
 			if (elasticsearch_connect()) {
 				response_tweets_list = elasticsearch_search(
-						this.elasticSearchCred.get("index").toString(),
-						this.elasticSearchCred.get("type").toString(),
-						this.queryString, 5000);
+						settingsConf.getElasticsearchIndex(),
+						settingsConf.getElasticsearchIndexType(),
+						settingsConf.getSearchValue(), 5000);
 			} else {
 				System.out.println("Error connecting to elasticsearch...!");
 				return null;
@@ -105,34 +91,33 @@ public class DataImporter {
 
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection("jdbc:mysql://"
-					+ this.mysqlCred.get("host").toString() + ":"
-					+ this.mysqlCred.get("port").toString() + "/"
-					+ this.mysqlCred.get("database").toString(), "root", "");
+					+ settingsConf.getMysqlHost() + ":"
+					+ settingsConf.getMysqlPort() + "/"
+					+ settingsConf.getMysqlDatabaseName(), "root", "");
 
 			if (connection != null) {
 
-				String[] query_terms = this.queryString.trim().split(" ");
+				String[] query_terms = settingsConf.getSearchValue().trim().split(" ");
 				String query_like = " LIKE '%" + query_terms[0] + "%' ";
 
 				for (int i = 1; i < query_terms.length; i++) {
-					query_like.concat("or " + this.mysqlCred.get("data_column").toString()
+					query_like.concat("or " + settingsConf.getMysqlDataColumnName()
 							+ " LIKE '%" + query_terms[i] + "%' ");
 				}
 
 				String query_mysql = "SELECT "
-						+ this.mysqlCred.get("data_column").toString()
+						+ settingsConf.getMysqlDataColumnName()
 						+ " from "
-						+ this.mysqlCred.get("table_name").toString()
+						+ settingsConf.getMysqlTableName()
 						+ " where "
-						+ this.mysqlCred.get("data_column").toString()
+						+ settingsConf.getMysqlDataColumnName()
 						+ query_like;
 
 				statement = connection.createStatement();
 				ResultSet results_set = statement.executeQuery(query_mysql);
 
 				while (results_set.next()) {
-					String tweet = results_set.getString(this.mysqlCred.get(
-							"data_column").toString());
+					String tweet = results_set.getString(settingsConf.getMysqlDataColumnName());
 					try{
 						responseList.add(new JSONObject(tweet).get("text")
 								.toString());
@@ -155,15 +140,12 @@ public class DataImporter {
 
 	private List<String> mongodb_search() {
 
-		MongoClient mongoClient = new MongoClient(this.mongodbCred.get("host")
-				.toString(), Integer.parseInt(this.mongodbCred.get("port")
-				.toString()));
-		MongoDatabase db = mongoClient.getDatabase(this.mongodbCred.get(
-				"database").toString());
+		MongoClient mongoClient = new MongoClient(settingsConf.getMongodbHost(), settingsConf.getMongodbPort());
+		MongoDatabase db = mongoClient.getDatabase(settingsConf.getMongodbDatabaseName());
 
 		FindIterable<Document> iterable = db.getCollection(
-				this.mongodbCred.get("collection").toString()).find(
-				new Document("$text", new Document("$search", this.queryString)));
+				settingsConf.getMongodbCollectionName()).find(
+				new Document("$text", new Document("$search", settingsConf.getSearchValue())));
 
 		responseListStrContainer = new ArrayList<String>();
 		iterable.forEach(new TgBlock());
@@ -189,9 +171,9 @@ public class DataImporter {
 
 		List<String> responseList = new ArrayList<String>();
 		BufferedReader reader = null;
-		String[] search_keywords = this.queryString.split("\\s");
+		String[] search_keywords = settingsConf.getSearchValue().split("\\s");
  		try {
-			reader = new BufferedReader(new FileReader(new File(inputFile)));
+			reader = new BufferedReader(new FileReader(new File(settingsConf.getFileName())));
 			String line;
 			while ((line = reader.readLine()) != null) {
 				String tweet_text = null;
@@ -223,15 +205,12 @@ public class DataImporter {
 
 	private boolean elasticsearch_connect() {
 
-		if (this.elasticSearchCred.containsKey("cluster.name")
-				&& !this.elasticSearchCred.get("cluster.name").toString()
-						.trim().isEmpty()) {
+		if (settingsConf.getElasticsearchClusterName() != null
+				&& !settingsConf.getElasticsearchClusterName().trim().isEmpty()) {
 
 			this.clientSettings = ImmutableSettings
 					.settingsBuilder()
-					.put("cluster.name",
-							this.elasticSearchCred.get("cluster.name")
-									.toString()).build();
+					.put("cluster.name",settingsConf.getElasticsearchClusterName()).build();
 		} else {
 			this.clientSettings = ImmutableSettings.settingsBuilder()
 					.put("cluster.name", "elasticsearch").build();
@@ -239,11 +218,8 @@ public class DataImporter {
 
 		setElasticSearchClient(new TransportClient(this.clientSettings));
 		getElasticSearchClient().addTransportAddress(
-				new InetSocketTransportAddress(this.elasticSearchCred.get(
-						"host").toString(), Integer
-						.parseInt(this.elasticSearchCred.get("port")
-								.toString())));
-
+				new InetSocketTransportAddress(settingsConf.getElasticsearchHost(), settingsConf.getElasticsearchPort()));
+		
 		return verifyConnection();
 	}
 
