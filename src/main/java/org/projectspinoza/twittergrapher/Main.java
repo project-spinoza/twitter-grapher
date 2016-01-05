@@ -22,7 +22,7 @@ public class Main {
 	static String searchValues;
 
 	public static void main(String[] args) {
-		log.debug("Initializing Twitter Grapher!!!");
+		log.info("Initializing Twitter Grapher!!!");
 		// read command line arguments
 		ConfigParams confParams = readCommandLineArguments(args);
 		JsonObject graphConfJson = getConfigJson(confParams.configFile);
