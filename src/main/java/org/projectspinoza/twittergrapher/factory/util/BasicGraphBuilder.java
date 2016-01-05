@@ -135,7 +135,7 @@ public class BasicGraphBuilder {
 		if (config.getNodecentralitythreshHold() != 0) {
 			String columnname = "Betweenness Centrality";
 			AttributeColumn column = attributeModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
-			graph = graphFilter.removePercentageNodes(graph, column, config.getNodecentralitythreshHold(), columnname);
+			graph = graphFilter.removePercentageNodes(graph, column, config.getNodecentralitythreshHold()/100, columnname);
 		}
 		if (config.getNeighborcountThreshHold() != 0) {
 			String columnname = "NeighborCount";

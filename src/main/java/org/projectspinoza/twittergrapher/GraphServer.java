@@ -148,40 +148,51 @@ public class GraphServer {
 
 		if (parameters.get("NodeSizeBy").contains("PageRank")) {
 			layoutSettings.put("nsb", "pr");
+			Configuration.getInstance().setNodeSizeBy("pr");
 		} else if (parameters.get("NodeSizeBy").contains("NodeCentrality")) {
 			layoutSettings.put("nsb", "nc");
+			Configuration.getInstance().setNodeSizeBy("nc");
 		}
 		
 		if (parameters.get("layouttype").contains("FruchtermanReingold")) {
 
 			layoutAlgo.put("name", "FruchtermanReingold");
 			layoutSettings.put("la", layoutAlgo.toString());
+			Configuration.getInstance().setLayoutAlgoName("FruchtermanReingold");
 			
 		} else if (parameters.get("layouttype").contains("ForceAtlasLayout")) {
 
 			layoutAlgo.put("name", "ForceAtlasLayout");
 			layoutSettings.put("la", layoutAlgo.toString());
+			Configuration.getInstance().setLayoutAlgoName("ForceAtlasLayout");
 		} else if (parameters.get("layouttype").contains("YifanHuLayout")) {
 			
 			layoutAlgo.put("name", "YifanHuLayout");
 			layoutSettings.put("la", layoutAlgo.toString());
+			Configuration.getInstance().setLayoutAlgoName("YifanHuLayout");
 		}
 
 		if (!parameters.get("nc").contains("null")) {
 			layoutSettings.put("nct", Integer.parseInt(parameters.get("nc")));
+			Configuration.getInstance().setNodecentralitythreshHold(Double.parseDouble(parameters.get("nc")));
 		} else {
 			layoutSettings.put("nct", 0);
+			Configuration.getInstance().setNodecentralitythreshHold(0.0);
 		}
 		
 		if(!parameters.get("NeighborCountRange").contains("null")){
 			layoutSettings.put("neighborcountrange",Double.parseDouble(parameters.get("NeighborCountRange")));
+			Configuration.getInstance().setNeighborcountThreshHold(Double.parseDouble(parameters.get("neighborcountrange")));
 		}else{
 			layoutSettings.put("neighborcountrange",0);
+			Configuration.getInstance().setNeighborcountThreshHold(0.0);
 		}
 		if (!parameters.get("prt").contains("null")) {
 			layoutSettings.put("prt", Integer.parseInt(parameters.get("prt")));
+			Configuration.getInstance().setPagerankthreshHold(Double.parseDouble(parameters.get("prt")));
 		} else {
 			layoutSettings.put("prt", 0);
+			Configuration.getInstance().setPagerankthreshHold(0.0);
 		}
 		
 		Configuration.getInstance().setDataSource(data_source);
