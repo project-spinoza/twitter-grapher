@@ -1,7 +1,5 @@
 package org.projectspinoza.twittergrapher.factory.util;
 
-import org.json.*;
-
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,7 +27,9 @@ import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.plugin.transformer.AbstractColorTransformer;
 import org.gephi.statistics.plugin.GraphDistance;
 import org.gephi.statistics.plugin.PageRank;
+import org.json.JSONObject;
 import org.openide.util.Lookup;
+import org.projectspinoza.twittergrapher.configurations.Configuration;
 import org.projectspinoza.twittergrapher.importers.DataSourceImporter;
 
 import de.uni_leipzig.informatik.asv.gephi.chinesewhispers.ChineseWhispersClusterer;
@@ -122,7 +122,7 @@ public class Builder {
 		
 		JSONObject sourcesCredJson = new JSONObject (((Map<String, Object>) settings.get("settings")).get("sources_cred").toString());		
 		String inputFile = sourcesCredJson.getString("file");
-		String dataSource = ((Map<String, Object>) settings.get("settings")).get("source_selected").toString();
+		String dataSource = Configuration.getInstance().getDataSource();
 		Container container = null;
 		
 		if (DataSourceType.contains(dataSource)) {

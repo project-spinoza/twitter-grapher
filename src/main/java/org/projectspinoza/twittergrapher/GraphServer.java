@@ -180,13 +180,11 @@ public class GraphServer {
 			layoutSettings.put("prt", 0);
 		}
 		
-		sources_settings.put("source_selected", data_source);
 		Configuration.getInstance().setDataSource(data_source);
 		
 		if (postProcessing == GraphProcessID.POST_PROCESS_GRAPH && Main.searchValues != null){
-			sources_settings.put("query_str", Main.searchValues.toString());
+			Configuration.getInstance().setSearchValue(Main.searchValues.toString());
 		}else {
-			sources_settings.put("query_str", parameters.get("searchField").toString());
 			Main.searchValues = parameters.get("searchField").toString();
 			Configuration.getInstance().setSearchValue(parameters.get("searchField").toString());
 		}
