@@ -28,7 +28,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.projectspinoza.twittergrapher.configurations.Configuration;
+import org.projectspinoza.twittergrapher.configuration.Configuration;
 
 import com.mongodb.Block;
 import com.mongodb.MongoClient;

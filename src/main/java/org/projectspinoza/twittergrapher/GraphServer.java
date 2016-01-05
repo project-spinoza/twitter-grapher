@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
-import org.projectspinoza.twittergrapher.configurations.ConfigHolder;
-import org.projectspinoza.twittergrapher.configurations.Configuration;
+import org.projectspinoza.twittergrapher.configuration.ConfigHolder;
+import org.projectspinoza.twittergrapher.configuration.Configuration;
 import org.projectspinoza.twittergrapher.factory.GraphFactory;
 import org.projectspinoza.twittergrapher.factory.util.Utils;
 import org.projectspinoza.twittergrapher.graph.TwitterGraph;

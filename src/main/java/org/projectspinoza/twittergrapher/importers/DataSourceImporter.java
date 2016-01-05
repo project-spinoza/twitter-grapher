@@ -16,7 +16,7 @@ import org.gephi.io.importer.impl.ImportContainerImpl;
 public class DataSourceImporter {
 	private ImportContainerImpl container;
 
-	public ImportContainerImpl importDataSource(Map<String, Object> settings) {
+	public ImportContainerImpl importDataSource() {
 
 		List<String> tweets = null;
 		try {
