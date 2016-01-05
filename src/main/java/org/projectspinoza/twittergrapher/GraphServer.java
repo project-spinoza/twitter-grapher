@@ -1,5 +1,17 @@
 package org.projectspinoza.twittergrapher;
 
+import java.io.FileNotFoundException;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONObject;
+import org.projectspinoza.twittergrapher.configuration.ConfigHolder;
+import org.projectspinoza.twittergrapher.configuration.Configuration;
+import org.projectspinoza.twittergrapher.factory.GraphFactory;
+import org.projectspinoza.twittergrapher.factory.util.Utils;
+import org.projectspinoza.twittergrapher.graph.TwitterGraph;
+
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -11,17 +23,6 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.templ.ThymeleafTemplateEngine;
-
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.JSONObject;
-import org.projectspinoza.twittergrapher.configuration.ConfigHolder;
-import org.projectspinoza.twittergrapher.configuration.Configuration;
-import org.projectspinoza.twittergrapher.factory.GraphFactory;
-import org.projectspinoza.twittergrapher.factory.util.Utils;
-import org.projectspinoza.twittergrapher.graph.TwitterGraph;
 
 public class GraphServer {
 	
@@ -208,6 +209,8 @@ public class GraphServer {
 			result = new HashMap<String, Object>();
 			result.put("nodes", graph);
 			routingContext.response().end(new JsonObject(result).toString());
+		}catch(FileNotFoundException fnex){
+			System.out.println("FileNotFound Exception: " + fnex.getMessage());
 		}catch (NullPointerException ex){
 			routingContext.response().end(new JsonObject(result).toString());
 		}
