@@ -1,25 +1,28 @@
 package org.projectspinoza.twittergrapher;
 
-import io.vertx.core.json.DecodeException;
-import io.vertx.core.json.JsonObject;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
-public class Main {
+import io.vertx.core.json.DecodeException;
+import io.vertx.core.json.JsonObject;
 
+public class Main {
+	private static Logger log = LogManager.getLogger(Main.class);
+	
 	static int app_port = 0;
 	static String searchValues;
 
 	public static void main(String[] args) {
-
+		log.debug("Initializing Twitter Grapher!!!");
 		// read command line arguments
 		ConfigParams confParams = readCommandLineArguments(args);
 		JsonObject graphConfJson = getConfigJson(confParams.configFile);

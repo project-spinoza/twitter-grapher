@@ -10,7 +10,7 @@ fi
 
 function run {
 
-	nohup java -jar ./target/twitter-grapher-v1.0-fat.jar -conf config.json > ./logs/logs.txt &
+	nohup java -jar ./target/twitter-grapher-v1.0-fat.jar -conf config.json &
 	echo $! > ./logs/pid.dat
 	echo "Server started succesfully..."
 }
