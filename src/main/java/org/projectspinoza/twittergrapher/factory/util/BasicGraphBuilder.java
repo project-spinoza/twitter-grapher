@@ -87,7 +87,7 @@ public class BasicGraphBuilder {
 		importController.process(graphContainer, new DefaultProcessor(), workspace);
 		graph = IS_DIRECTED ? graphModel.getDirectedGraph() : graphModel.getUndirectedGraph();
 		calculatePageRank(IS_DIRECTED);
-		addColumnAttributeModel("NeighborCount");
+		graph = addColumnAttributeModel(graph, attributeModel, "NeighborCount");
 		graphLayout.applayLayouts(graphModel);
 		
 		GraphDistance graphDistance = new GraphDistance();
@@ -101,7 +101,7 @@ public class BasicGraphBuilder {
 		return graph;
 	}
 	
-	public void addColumnAttributeModel(String columnName){
+	public Graph addColumnAttributeModel(Graph graph, AttributeModel attributeModel, String columnName){
 		attributeModel.getNodeTable().addColumn(columnName, AttributeType.DOUBLE);
 		Node[] node1 = graph.getNodes().toArray();
 		double neighborcount = 0.0;
@@ -110,6 +110,7 @@ public class BasicGraphBuilder {
 			neighborcount = neighbors.length;
 			node1[i].getAttributes().setValue(columnName, neighborcount);
 		}
+		return graph;
 	}
 	
 	public void calculatePageRank(Boolean IS_DIRECTED){
