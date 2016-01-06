@@ -11,7 +11,6 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.attribute.AttributeRangeBuilder;
 import org.gephi.filters.plugin.graph.DegreeRangeBuilder.DegreeRangeFilter;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.ranking.api.Ranking;

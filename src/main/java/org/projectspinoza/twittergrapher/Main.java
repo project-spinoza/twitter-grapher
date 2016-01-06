@@ -30,9 +30,9 @@ public class Main {
 		boolean appDeployed = (graphServer == null)? false:graphServer.deployServer();
 		
 		if (appDeployed) {
-			System.out.println("App server deployed successfully at port " + app_port);
+			log.info("App server deployed successfully at port " + app_port);
 		}else {
-			System.out.println("Error deploying App server.");
+			log.error("Error deploying App server.");
 		}
 	}
 

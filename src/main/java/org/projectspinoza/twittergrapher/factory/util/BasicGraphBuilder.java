@@ -3,6 +3,8 @@ package org.projectspinoza.twittergrapher.factory.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -26,6 +28,8 @@ import org.projectspinoza.twittergrapher.configuration.Configuration;
 import org.projectspinoza.twittergrapher.importers.DataSourceImporter;
 
 public class BasicGraphBuilder {
+	
+	private static Logger log = LogManager.getLogger(BasicGraphBuilder.class);
 	
 	private ProjectController projectController;
 	private Workspace workspace; //. depends on pc
@@ -64,20 +68,20 @@ public class BasicGraphBuilder {
 	
 	public Graph buildBasicGraph(boolean IS_DIRECTED) throws FileNotFoundException{
 		Configuration config = Configuration.getInstance();
-		System.out.println(config);
+		//System.out.println(config);
 		if (DataSourceType.contains(config.getDataSource())) {
 			graphContainer = (new DataSourceImporter()).importDataSource();
 			if (graphContainer == null){
-				System.out.println("Error generating graph from "+config.getFileName());
+				log.error("Error generating graph from "+config.getFileName());
 			}
 		} else if (config.getDataSource().equals("graphfile")){
 			File file = new File(config.getFileName());
 			graphContainer = importController.importFile(file);
 			if (graphContainer == null){
-				System.out.println("No graph found in "+config.getFileName()+". Make sure you are using correct graph file format.");
+				log.error("No graph found in "+config.getFileName()+". Make sure you are using correct graph file format.");
 			}
 		}else {
-			System.out.println ("Unsupported file format.");
+			log.error("Unsupported file format.");
 		}
 		
 		importController.process(graphContainer, new DefaultProcessor(), workspace);
@@ -91,8 +95,8 @@ public class BasicGraphBuilder {
 		applayGraphFilters(config);
 		graphPreview.setGraphPreview(previewModel);
 		
-		System.out.println("Nodes["+graph.getNodeCount()+"]");
-		System.out.println("Edges["+graph.getEdgeCount()+"]");
+		log.info("Nodes["+graph.getNodeCount()+"]");
+		log.info("Edges["+graph.getEdgeCount()+"]");
 		
 		return graph;
 	}

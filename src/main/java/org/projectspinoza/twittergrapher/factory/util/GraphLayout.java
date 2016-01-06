@@ -1,5 +1,7 @@
 package org.projectspinoza.twittergrapher.factory.util;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.plugin.force.StepDisplacement;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
@@ -11,6 +13,8 @@ import de.uni_leipzig.informatik.asv.gephi.chinesewhispers.ChineseWhispersCluste
 
 public class GraphLayout {
 	
+	private static Logger log = LogManager.getLogger(GraphLayout.class);
+	
 	public GraphLayout() {
 	}
 	
@@ -21,16 +25,16 @@ public class GraphLayout {
 		
 		String layoutAlgorithmName = config.getLayoutAlgoName();
 		if (layoutAlgorithmName.equals("YifanHuLayout")) {
-			System.out.println("\nLayout: YifanHuLayout");
+			log.info("\nLayout: YifanHuLayout");
 			yifanHuLayout(graphModel, config);
 			
 		} else if (layoutAlgorithmName.equals("ForceAtlasLayout")) {
-			System.out.println("\nLayout: ForceAtlasLayout");
+			log.info("\nLayout: ForceAtlasLayout");
 			forceAtlasLayout(graphModel, config);
 			
 		} else if (layoutAlgorithmName.equals("FruchtermanReingold")) {
 			
-			System.out.println("\nLayout: FruchtermanReingold");
+			log.info("\nLayout: FruchtermanReingold");
 			fruchtermanReingoldLayout(graphModel, config);
 		}
 	}

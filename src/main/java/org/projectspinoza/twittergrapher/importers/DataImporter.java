@@ -15,6 +15,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -36,7 +38,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 
 public class DataImporter {
-
+	
+	private static Logger log = LogManager.getLogger(DataImporter.class);
+	
 	private Configuration settingsConf;
 	
 	private TransportClient elasticSearchClient;
@@ -61,7 +65,7 @@ public class DataImporter {
 						settingsConf.getElasticsearchIndexType(),
 						settingsConf.getSearchValue(), 5000);
 			} else {
-				System.out.println("Error connecting to elasticsearch...!");
+				log.error("Error connecting to elasticsearch...!");
 				return null;
 			}
 			break;
@@ -127,7 +131,7 @@ public class DataImporter {
 				}
 
 			} else {
-				System.out.println("Database connection failed...");
+				log.error("Database connection failed...");
 			}
 
 		} catch (ClassNotFoundException | SQLException e) {
@@ -193,7 +197,7 @@ public class DataImporter {
 				}
 			}
 		} catch (IOException e) {
-			System.out.println("File not exists or error reading file.!");
+			log.error("File not exists or error reading file.!");
 		} finally {
 			if (reader != null) {
 				reader.close();
