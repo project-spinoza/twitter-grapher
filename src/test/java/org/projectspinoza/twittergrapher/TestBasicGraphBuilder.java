@@ -1,6 +1,6 @@
 package org.projectspinoza.twittergrapher;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,11 +16,8 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
-import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.ranking.api.RankingController;
 import org.gephi.statistics.plugin.GraphDistance;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +26,6 @@ import org.projectspinoza.twittergrapher.configuration.Configuration;
 import org.projectspinoza.twittergrapher.factory.util.BasicGraphBuilder;
 import org.projectspinoza.twittergrapher.factory.util.DataSourceType;
 import org.projectspinoza.twittergrapher.factory.util.GraphFilter;
-import org.projectspinoza.twittergrapher.factory.util.GraphLayout;
-import org.projectspinoza.twittergrapher.factory.util.GraphPreview;
 import org.projectspinoza.twittergrapher.importers.DataSourceImporter;
 
 public class TestBasicGraphBuilder {
@@ -41,14 +36,14 @@ public class TestBasicGraphBuilder {
 	private GraphModel graphModel;
 	private Graph graph; //. depends on graphModel
 	
-	private PreviewModel previewModel;
+//	private PreviewModel previewModel;
 	private ImportController importController; //. depends on workspace
 	private Container graphContainer; //. depends on importController
-	private RankingController rankingController;
+//	private RankingController rankingController;
 	private AttributeModel attributeModel;
 	private GraphFilter graphFilter; //. AttributeModel, Graph, AttributeColumn, AttributeModel, RankingController
-	private GraphLayout graphLayout; //. depends on GraphModel
-	private GraphPreview graphPreview; //. depends on GraphPreviewModel
+//	private GraphLayout graphLayout; //. depends on GraphModel
+//	private GraphPreview graphPreview; //. depends on GraphPreviewModel
 	Configuration config ;
 	
 	@Before
@@ -60,14 +55,14 @@ public class TestBasicGraphBuilder {
 		
 		attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
 		graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-		previewModel = Lookup.getDefault().lookup(PreviewController.class).getModel();
+//		previewModel = Lookup.getDefault().lookup(PreviewController.class).getModel();
 		importController = Lookup.getDefault().lookup(ImportController.class);
-		rankingController = Lookup.getDefault().lookup(RankingController.class);
+//		rankingController = Lookup.getDefault().lookup(RankingController.class);
 		
 		
 		graphFilter = new GraphFilter();
-		graphLayout = new GraphLayout();
-		graphPreview = new GraphPreview(); 
+//		graphLayout = new GraphLayout();
+//		graphPreview = new GraphPreview(); 
 		
 	    config = Configuration.getInstance();
 	    config.setDataSource("inputfile");
@@ -133,8 +128,9 @@ public class TestBasicGraphBuilder {
 		assertEquals(expected, result);
 	}
 	@Test
+	@SuppressWarnings("unused")
 	public void TestBetweennessCentrality(){
-		 Graph testGraph;
+		Graph testGraph = null;
 		int expected = 140;
 		String columnname = "Betweenness Centrality";
 		AttributeColumn column = attributeModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);

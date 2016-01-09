@@ -122,6 +122,7 @@ public class GraphServer {
 		
 		final ThymeleafTemplateEngine engine = ThymeleafTemplateEngine.create();
 		routingContext.put("color", this.settingsConf.getLayoutSettings().get("bk_color"));
+		routingContext.put("app_port", Main.app_port);
 		routingContext.put("graph_settings", this.settingsConf.getGraphSettings());
 		engine.render(routingContext,"webroot/index.html",results_async -> {
 			if (results_async.succeeded()) {

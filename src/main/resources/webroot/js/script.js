@@ -151,9 +151,9 @@ $('#clickbtn').click(function(event) {
 
        if (!isPostProcessing){
 
-          request_url = "http://localhost:8080/ajax";
+          request_url = "http://localhost:"+app_port+"/ajax";
        }else {
-          request_url = "http://localhost:8080/processGraph";
+          request_url = "http://localhost:"+app_port+"/processGraph";
           isPostProcessing = false;
        }
        $.ajax({
