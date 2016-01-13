@@ -1,6 +1,7 @@
 @echo off
 
 set numArgs=0
+
 for %%x in (%*) do Set /A numArgs+=1
 
 IF %1 == start (
@@ -44,7 +45,8 @@ goto eof
 :stop
 IF EXIST .\logs\pid.dat (
 
-		  set /p pid=< .\logs\pid.dat  
+		  set /p pid=< .\logs\pid.dat 
+
 		  IF "%pid%" == "" (
 		  		echo No server running.
 		  )ELSE (
@@ -61,11 +63,18 @@ IF EXIST .\logs\pid.dat (
 )
 goto eof
 
+set numCheckRept=0
 
 :status 
 IF EXIST .\logs\pid.dat (
 
-		  set /p pid=< .\logs\pid.dat  
+		  set /p pid=< .\logs\pid.dat 
+
+		  IF %numCheckRept% EQU 0 (
+		  	 set /A numCheckRept=numCheckRept+1
+		  	 goto status
+		  )
+
 		  IF "%pid%" == "" (
 		  		echo No server running.
 		  )ELSE (
@@ -80,4 +89,5 @@ IF EXIST .\logs\pid.dat (
 
 
 :eof
+set /A numCheckRept=0
 Exit /b
