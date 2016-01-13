@@ -69,7 +69,6 @@ set numCheckRept=0
 IF EXIST .\logs\pid.dat (
 
 		  set /p pid=< .\logs\pid.dat 
-
 		  IF %numCheckRept% EQU 0 (
 		  	 set /A numCheckRept=numCheckRept+1
 		  	 goto status
