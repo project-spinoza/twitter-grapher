@@ -88,11 +88,12 @@ public class BasicGraphBuilder {
 		graph = IS_DIRECTED ? graphModel.getDirectedGraph() : graphModel.getUndirectedGraph();
 		calculatePageRank(IS_DIRECTED);
 		graph = addColumnAttributeModel(graph, attributeModel, "NeighborCount");
-		graphLayout.applayLayouts(graphModel);
+		//graphLayout.applayLayouts(graphModel);
 		
 		GraphDistance graphDistance = new GraphDistance();
 		getcentrality(graphModel, attributeModel, graphDistance , true);
 		applayGraphFilters(config);
+		graphLayout.applayLayouts(graphModel);
 		graphPreview.setGraphPreview(previewModel);
 		
 		log.info("Nodes["+graph.getNodeCount()+"]");
