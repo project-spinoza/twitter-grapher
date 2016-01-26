@@ -262,19 +262,31 @@ function showGraph(givenData, givenContainer, givenSettings){
           n.color = n.originalColor;
           n.label = n.originalLabel;
         } else{
-          n.color = 'blue';
-          n.label = "";
+          n.color = '#404040';
+          n.label = '';
         }
     });
 
     s.graph.edges().forEach(function(e) {
       if (toKeep[e.source] && toKeep[e.target])
-        e.color ='green';
+        e.color = e.originalColor;
       else
-       e.color = e.originalColor;
+       e.color = '#404040';
     });
     s.refresh();
   });
+   
+   s.bind('outNode', function(e){
+	      s.graph.nodes().forEach(function(n) {
+	    	  n.color = n.originalColor;
+	          n.label = n.originalLabel;
+	    });
+
+	    s.graph.edges().forEach(function(e) {
+	        e.color = e.originalColor;
+	    });
+	    s.refresh();
+	  });
 
   s.refresh();
    }
