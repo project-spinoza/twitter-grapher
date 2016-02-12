@@ -41,8 +41,9 @@ The purpose of this project is to allow a user to visualize large set of data fr
 ### Open your favorite web browser
 Navigate to `http://localhost:8080/graph`
 
-
-
-
 ## License
 The code is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+<br>
+## Questions or Suggestions
+**Email** `project.spinoza@gmail.com`<br>
+**Issues** https://github.com/project-spinoza/twitter-grapher/issues
